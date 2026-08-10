@@ -1,13 +1,26 @@
 ---
 import '../styles/auth.css';
+import '../styles/branding.css';
+import BrandLogo from '../components/BrandLogo.astro';
+import faviconUrl from '../../favicon.png?url';
+import iconLightUrl from '../../icon_light_Mode.png?url';
 ---
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="robots" content="noindex"/><title>Application Status — School Pulse</title></head>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="robots" content="noindex"/>
+  <meta name="theme-color" content="#eef3f9"/>
+  <link rel="icon" type="image/png" href={faviconUrl}/>
+  <link rel="apple-touch-icon" href={iconLightUrl}/>
+  <link rel="manifest" href="/manifest.webmanifest"/>
+  <title>Application Status — School Pulse</title>
+</head>
 <body>
   <main class="status-page">
     <section class="status-card">
-      <div class="auth-brand" style="justify-content:center"><span class="auth-brand-mark">SP</span><div style="text-align:left"><strong>School Pulse</strong><small>School Management System</small></div></div>
+      <a class="auth-brand brand-image-link" href="/" aria-label="School Pulse home" style="justify-content:center!important"><BrandLogo kind="logo" mode="light" class="auth-brand-logo" /></a>
       <div class="status-icon" id="statusIcon">◷</div><span class="status-badge" id="statusBadge">Under Review</span>
       <h1 id="statusTitle">Your application is pending review</h1><div class="status-school" id="schoolName">Your school</div>
       <p id="statusCopy">Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You will be notified once your school is approved and activated.</p>

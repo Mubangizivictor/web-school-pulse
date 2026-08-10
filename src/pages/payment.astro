@@ -1,0 +1,265 @@
+---
+import AuthLayout from '../layouts/AuthLayout.astro';
+import BrandLogo from '../components/BrandLogo.astro';
+---
+<AuthLayout title="Subscription Payment — School Pulse">
+  <div class="payment-shell">
+    <a class="auth-brand-clean" href="/" aria-label="School Pulse home">
+      <BrandLogo kind="icon" mode="light" class="auth-brand-clean-icon" />
+      <span><strong>School Pulse</strong><small>Subscription Payment</small></span>
+    </a>
+
+    <div id="loadingState" class="payment-state">
+      <span class="payment-spinner"></span>
+      <strong>Loading your subscription…</strong>
+      <small>Checking your school and current plan.</small>
+    </div>
+
+    <section id="paymentContent" hidden>
+      <div class="payment-heading">
+        <div>
+          <span class="payment-eyebrow" id="paymentTypeLabel">Subscription</span>
+          <h1>Complete your School Pulse payment</h1>
+          <p id="schoolSummary">Pay the exact plan amount, then upload proof for verification.</p>
+        </div>
+        <div class="amount-card">
+          <small>Amount due</small>
+          <strong id="amountDue">UGX —</strong>
+          <span id="billingCycle">per term</span>
+        </div>
+      </div>
+
+      <div id="pageMessage" hidden></div>
+
+      <div id="reviewState" class="review-state" hidden>
+        <div class="review-icon">✓</div>
+        <div>
+          <strong>Payment proof received</strong>
+          <p>Your payment is waiting for manual verification. School access will update automatically after the SaaS Owner confirms the money was received.</p>
+        </div>
+      </div>
+
+      <div id="paymentGrid" class="payment-grid">
+        <div>
+          <h2>1. Choose where to pay</h2>
+          <div class="method-grid">
+            <button class="method-card selected" type="button" data-method="mtn">
+              <span class="method-badge">MTN</span>
+              <strong>MTN Mobile Money</strong>
+              <small>Send the exact amount manually</small>
+            </button>
+            <button class="method-card" type="button" data-method="bank">
+              <span class="method-badge bank">BANK</span>
+              <strong>Centenary Bank</strong>
+              <small>Transfer or deposit to the account</small>
+            </button>
+          </div>
+
+          <div id="mtnInstructions" class="instruction-card">
+            <div class="instruction-title"><span>MTN Mobile Money</span><span class="secure-pill">Manual verification</span></div>
+            <div class="instruction-row"><span>Number</span><strong id="mtnNumber">—</strong><button type="button" data-copy="mtnNumber">Copy</button></div>
+            <div class="instruction-row"><span>Account name</span><strong id="mtnName">—</strong></div>
+            <div class="instruction-note">Before confirming the transfer, make sure the recipient name shown on your phone matches the account name above.</div>
+          </div>
+
+          <div id="bankInstructions" class="instruction-card" hidden>
+            <div class="instruction-title"><span id="bankName">Centenary Bank Uganda</span><span class="secure-pill">Bank transfer</span></div>
+            <div class="instruction-row"><span>Account number</span><strong id="bankAccount">—</strong><button type="button" data-copy="bankAccount">Copy</button></div>
+            <div class="instruction-row"><span>Account name</span><strong id="bankAccountName">—</strong></div>
+            <div class="instruction-row"><span>Branch</span><strong id="bankBranch">—</strong></div>
+            <div class="instruction-note">Keep the bank receipt, deposit slip, transfer confirmation, or screenshot. You will upload it below.</div>
+          </div>
+        </div>
+
+        <form id="paymentForm" class="proof-card">
+          <h2>2. Submit payment proof</h2>
+          <p>School Pulse does not activate from a screenshot alone. The SaaS Owner must verify that the money was actually received.</p>
+
+          <div class="form-field">
+            <label for="payerName">Name of person/account that paid</label>
+            <input id="payerName" autocomplete="name" required placeholder="Payer name" />
+          </div>
+          <div class="form-field">
+            <label for="reference">Transaction / bank reference</label>
+            <input id="reference" required maxlength="120" placeholder="e.g. MTN transaction ID or bank reference" />
+          </div>
+          <div class="form-field">
+            <label for="paymentDate">Payment date</label>
+            <input id="paymentDate" type="date" required />
+          </div>
+          <div class="form-field">
+            <label for="proofFile">Payment proof</label>
+            <label class="upload-box" for="proofFile">
+              <span class="upload-icon">↑</span>
+              <strong id="uploadTitle">Upload screenshot or PDF</strong>
+              <small id="uploadHint">Image or PDF, maximum 10 MB</small>
+            </label>
+            <input id="proofFile" type="file" accept="image/*,application/pdf,.pdf" required hidden />
+          </div>
+          <div class="form-field">
+            <label for="paymentNote">Note <span>Optional</span></label>
+            <textarea id="paymentNote" rows="3" maxlength="700" placeholder="Anything we should know about this payment"></textarea>
+          </div>
+
+          <div class="amount-confirmation">
+            <span>Full payment required</span>
+            <strong id="confirmAmount">UGX —</strong>
+          </div>
+          <button class="auth-btn auth-btn-primary" id="submitPayment" type="submit">Submit for Verification →</button>
+          <small class="submit-note">Submitting proof does not automatically activate School Pulse. Access changes only after manual approval.</small>
+        </form>
+      </div>
+
+      <div class="payment-footer-actions">
+        <a href="/application-status">View application status</a>
+        <a href="/login">Back to sign in</a>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .payment-shell{width:min(1040px,calc(100vw - 32px));margin:32px auto 48px;background:#fff;border:1px solid #e5eaf1;border-radius:24px;box-shadow:0 24px 70px rgba(22,34,54,.10);padding:28px;color:#172033}
+    .payment-state{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#607089;text-align:center}.payment-state small{font-size:13px}.payment-spinner{width:34px;height:34px;border:3px solid #dce4ef;border-top-color:#3958d8;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .payment-heading{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin:32px 0 24px}.payment-heading h1{font-size:30px;line-height:1.12;margin:6px 0 8px;color:#182235}.payment-heading p{margin:0;color:#68778d;max-width:620px}.payment-eyebrow{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#3958d8}.amount-card{min-width:210px;border:1px solid #dfe6f0;background:#f7f9fc;border-radius:16px;padding:16px 18px;display:flex;flex-direction:column}.amount-card small,.amount-card span{color:#718096;font-size:12px}.amount-card strong{font-size:22px;margin:5px 0;color:#172033}
+    .payment-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:24px}.payment-grid h2,.proof-card h2{font-size:17px;margin:0 0 12px}.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.method-card{border:1px solid #dfe6ef;background:#fff;border-radius:15px;padding:16px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:5px;color:#263248}.method-card:hover{border-color:#9eace7}.method-card.selected{border:2px solid #3958d8;background:#f5f7ff;padding:15px}.method-card small{font-size:12px;color:#718096}.method-badge{width:max-content;background:#ffdc00;color:#191919;font-size:10px;font-weight:900;padding:4px 7px;border-radius:6px}.method-badge.bank{background:#e7eefc;color:#244aa5}
+    .instruction-card{margin-top:14px;border:1px solid #dfe6ef;background:#f9fbfd;border-radius:16px;padding:16px}.instruction-title{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:800;margin-bottom:8px}.secure-pill{font-size:10px;color:#257651;background:#e8f6ef;padding:5px 8px;border-radius:999px}.instruction-row{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-top:1px solid #e7ecf2}.instruction-row span{font-size:12px;color:#718096}.instruction-row strong{font-size:14px;word-break:break-word}.instruction-row button{border:0;background:#e9eefb;color:#304fbd;border-radius:7px;padding:6px 9px;font-size:11px;cursor:pointer}.instruction-note{font-size:12px;color:#65758b;line-height:1.5;padding-top:10px;border-top:1px solid #e7ecf2}
+    .proof-card{border:1px solid #dfe6ef;border-radius:18px;padding:20px;background:#fff}.proof-card>p{font-size:12px;line-height:1.5;color:#718096;margin:-3px 0 18px}.proof-card .form-field{margin-bottom:14px}.proof-card label{display:block;font-size:12px;font-weight:700;color:#445168;margin-bottom:7px}.proof-card label span{font-weight:500;color:#8794a7}.proof-card input,.proof-card textarea{width:100%;box-sizing:border-box;border:1px solid #d9e0e9;border-radius:10px;padding:12px 13px;color:#172033;background:#fff;font:inherit;font-size:14px;outline:none}.proof-card input:focus,.proof-card textarea:focus{border-color:#6078df;box-shadow:0 0 0 3px rgba(57,88,216,.08)}.upload-box{border:1.5px dashed #c8d2df!important;border-radius:12px;padding:18px!important;text-align:center;cursor:pointer;background:#f9fbfd;display:flex!important;flex-direction:column;align-items:center;gap:4px}.upload-box:hover{border-color:#7188e4!important;background:#f6f8ff}.upload-icon{width:30px;height:30px;border-radius:9px;background:#e9eefb;color:#3958d8;display:grid!important;place-items:center;font-size:19px}.upload-box strong{font-size:13px;color:#31405a}.upload-box small{font-size:11px;color:#7b899b}.amount-confirmation{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e7ecf2;border-bottom:1px solid #e7ecf2;padding:13px 0;margin:2px 0 16px}.amount-confirmation span{font-size:12px;color:#718096}.amount-confirmation strong{font-size:14px}.submit-note{display:block;text-align:center;color:#7d8998;font-size:10px;line-height:1.45;margin-top:9px}
+    .review-state{display:flex;gap:14px;align-items:flex-start;background:#edf9f3;border:1px solid #c8ead8;border-radius:16px;padding:17px;margin-bottom:20px;color:#225e43}.review-state p{margin:4px 0 0;font-size:13px;line-height:1.5}.review-icon{width:30px;height:30px;border-radius:50%;background:#2f9b6a;color:#fff;display:grid;place-items:center;font-weight:900;flex:0 0 auto}#pageMessage{padding:13px 14px;border-radius:12px;margin-bottom:18px;font-size:13px}.message-error{background:#fff0ee;color:#9c3127;border:1px solid #f1d0cb}.message-info{background:#eef3ff;color:#3150ac;border:1px solid #d6e0fb}.message-success{background:#edf9f3;color:#236347;border:1px solid #ccebdc}
+    .payment-footer-actions{display:flex;justify-content:center;gap:22px;margin-top:24px;padding-top:18px;border-top:1px solid #edf0f4}.payment-footer-actions a{font-size:12px;color:#63718a;text-decoration:none}.payment-footer-actions a:hover{color:#3958d8}.auth-brand-clean{margin:0!important}
+    @media(max-width:760px){.payment-shell{margin:0 auto;width:100%;min-height:100vh;border:0;border-radius:0;padding:20px;box-sizing:border-box}.payment-heading{flex-direction:column;margin-top:28px}.payment-heading h1{font-size:25px}.amount-card{width:100%;box-sizing:border-box}.payment-grid{grid-template-columns:1fr}.method-grid{grid-template-columns:1fr}.instruction-row{grid-template-columns:105px 1fr auto}.payment-footer-actions{flex-direction:column;align-items:center;gap:10px}}
+  </style>
+
+  <script type="module" is:inline>
+    import { auth, storage, functionsBaseUrl } from '/js/firebase-client.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { ref as storageRef, uploadBytes } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+
+    const loadingState=document.getElementById('loadingState');
+    const content=document.getElementById('paymentContent');
+    const form=document.getElementById('paymentForm');
+    const paymentGrid=document.getElementById('paymentGrid');
+    const reviewState=document.getElementById('reviewState');
+    const message=document.getElementById('pageMessage');
+    const submit=document.getElementById('submitPayment');
+    const fileInput=document.getElementById('proofFile');
+    const paymentDate=document.getElementById('paymentDate');
+    let user=null, paymentContext=null, method='mtn', submitting=false;
+
+    paymentDate.value=new Date().toISOString().slice(0,10);
+
+    function setMessage(text,type='error'){
+      message.hidden=!text;
+      message.textContent=text||'';
+      message.className=type==='success'?'message-success':type==='info'?'message-info':'message-error';
+    }
+    const money=n=>`UGX ${Number(n||0).toLocaleString('en-UG')}`;
+    const safeFileName=name=>(name||'proof').replace(/[^A-Za-z0-9._-]/g,'_').slice(-100);
+    const newId=()=>globalThis.crypto?.randomUUID?.().replace(/-/g,'')||`${Date.now()}_${Math.random().toString(36).slice(2,12)}`;
+
+    function selectMethod(next){
+      method=next;
+      document.querySelectorAll('.method-card').forEach(b=>b.classList.toggle('selected',b.dataset.method===method));
+      document.getElementById('mtnInstructions').hidden=method!=='mtn';
+      document.getElementById('bankInstructions').hidden=method!=='bank';
+    }
+    document.querySelectorAll('.method-card').forEach(button=>button.addEventListener('click',()=>selectMethod(button.dataset.method)));
+
+    document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+      const el=document.getElementById(button.dataset.copy); if(!el)return;
+      try{await navigator.clipboard.writeText(el.textContent.trim());const old=button.textContent;button.textContent='Copied';setTimeout(()=>button.textContent=old,1200)}catch{}
+    }));
+
+    fileInput.addEventListener('change',()=>{
+      const file=fileInput.files?.[0];
+      document.getElementById('uploadTitle').textContent=file?file.name:'Upload screenshot or PDF';
+      document.getElementById('uploadHint').textContent=file?`${(file.size/1024/1024).toFixed(2)} MB`:'Image or PDF, maximum 10 MB';
+    });
+
+    async function loadContext(){
+      const token=await user.getIdToken(true);
+      const response=await fetch(`${functionsBaseUrl}/getManualPaymentContext`,{headers:{Authorization:`Bearer ${token}`}});
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(data.message||data.error||'Could not load subscription payment details.');
+      paymentContext=data;
+      renderContext(data);
+    }
+
+    function renderContext(data){
+      loadingState.hidden=true; content.hidden=false;
+      const plan=data.plan||{}, instructions=data.instructions||{}, mtn=instructions.mobileMoney||{}, bank=instructions.bank||{};
+      document.getElementById('paymentTypeLabel').textContent=data.paymentType==='renewal'?'Subscription renewal':'First subscription payment';
+      document.getElementById('schoolSummary').textContent=`${data.schoolName||'Your school'} • ${plan.name||'School Pulse plan'}`;
+      document.getElementById('amountDue').textContent=money(plan.expectedAmount);
+      document.getElementById('confirmAmount').textContent=money(plan.expectedAmount);
+      document.getElementById('billingCycle').textContent=`per ${plan.billingCycle||'term'}`;
+      document.getElementById('mtnNumber').textContent=mtn.number||'—';
+      document.getElementById('mtnName').textContent=mtn.accountName||'—';
+      document.getElementById('bankName').textContent=bank.bankName||'Bank transfer';
+      document.getElementById('bankAccount').textContent=bank.accountNumber||'—';
+      document.getElementById('bankAccountName').textContent=bank.accountName||'—';
+      document.getElementById('bankBranch').textContent=bank.branch||'—';
+      const maxMb=Math.max(1,Math.floor(Number(data.proofMaxBytes||10485760)/1024/1024));
+      document.getElementById('uploadHint').textContent=`Image or PDF, maximum ${maxMb} MB`;
+
+      if(plan.pricingUnavailable){
+        paymentGrid.hidden=true;
+        setMessage('This plan uses custom pricing. The SaaS Owner must set the amount before you can submit payment.','info');
+        return;
+      }
+      if(data.paymentStatus==='under_review'||data.paymentStatus==='payment_review'){
+        paymentGrid.hidden=true; reviewState.hidden=false;
+        return;
+      }
+      if(data.paymentStatus==='rejected'&&data.paymentRejectionReason){
+        setMessage(`Previous proof was not approved: ${data.paymentRejectionReason}. You can submit a corrected payment proof below.`,'error');
+      }
+    }
+
+    form.addEventListener('submit',async event=>{
+      event.preventDefault(); if(submitting||!paymentContext||!user)return;
+      const file=fileInput.files?.[0];
+      if(!file){setMessage('Upload the payment screenshot, receipt, deposit slip, or PDF first.');return}
+      const maxBytes=Number(paymentContext.proofMaxBytes||10485760);
+      if(file.size<=0||file.size>maxBytes){setMessage(`Payment proof must be smaller than ${Math.floor(maxBytes/1024/1024)} MB.`);return}
+      if(!(file.type.startsWith('image/')||file.type==='application/pdf')){setMessage('Payment proof must be an image or PDF.');return}
+
+      submitting=true; submit.disabled=true; submit.innerHTML='<span class="loading"></span> Uploading proof…'; setMessage('');
+      const submissionId=newId();
+      const path=`payment_proofs/${user.uid}/${submissionId}_${safeFileName(file.name)}`;
+      try{
+        await uploadBytes(storageRef(storage,path),file,{contentType:file.type||'application/octet-stream',customMetadata:{purpose:'subscription_payment_proof'}});
+        submit.innerHTML='<span class="loading"></span> Submitting for verification…';
+        const token=await user.getIdToken(true);
+        const response=await fetch(`${functionsBaseUrl}/submitManualPayment`,{
+          method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},
+          body:JSON.stringify({
+            submissionId,
+            method,
+            amount:Number(paymentContext.plan.expectedAmount),
+            payerName:document.getElementById('payerName').value.trim(),
+            reference:document.getElementById('reference').value.trim(),
+            paymentDate:paymentDate.value,
+            proofStoragePath:path,
+            note:document.getElementById('paymentNote').value.trim(),
+          }),
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok)throw new Error(result.message||result.error||'Payment proof could not be submitted.');
+        paymentGrid.hidden=true; reviewState.hidden=false;
+        setMessage('Payment submitted successfully. It is now waiting for manual verification.','success');
+        setTimeout(()=>location.href=`/application-status?status=approved&payment=under_review&school=${encodeURIComponent(paymentContext.schoolName||'Your school')}`,1200);
+      }catch(error){
+        setMessage(error?.message||'Could not submit payment proof. Please try again.');
+      }finally{
+        submitting=false;submit.disabled=false;submit.textContent='Submit for Verification →';
+      }
+    });
+
+    onAuthStateChanged(auth,async current=>{
+      if(!current){location.replace('/login?next=%2Fpayment');return}
+      if(!current.emailVerified){location.replace('/login?next=%2Fpayment');return}
+      user=current;
+      try{await loadContext()}catch(error){loadingState.hidden=true;content.hidden=false;paymentGrid.hidden=true;setMessage(error?.message||'Could not load payment details.')}
+    });
+  </script>
+</AuthLayout>

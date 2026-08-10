@@ -15,4 +15,7 @@ export const auth = getAuth(firebaseApp);
 auth.useDeviceLanguage();
 
 export const functionsBaseUrl = 'https://europe-west1-school-pulse-3d95b.cloudfunctions.net';
-export const appUrl = 'https://app.schoolpulse.victorbee.com';
+// Reliable Flutter web fallback. After app.schoolpulse.victorbee.com is
+// attached to this Firebase Hosting site, this can be switched to the custom
+// subdomain without changing the registration or approval workflow.
+export const appUrl = 'https://school-pulse-3d95b.web.app';

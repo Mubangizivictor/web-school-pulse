@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { modules } from '../../config/site';
+const slugs=['student-management','attendance','academics','finance','teacher-management','parent-portal','report-cards','boarding','health','library','security','transport','stores-assets','catering','messaging','administration'];
+---
+<BaseLayout title="Features — School Pulse" description="Explore School Pulse modules for students, attendance, academics, finance, boarding, health, security, transport and more.">
+<section class="page-hero"><div class="container"><span class="eyebrow">Features</span><h1>One connected platform for school operations.</h1><p class="lead" style="margin-inline:auto">Give every role the tools it needs while keeping school information connected, secure and easier to manage.</p></div></section>
+<section class="section"><div class="container"><div class="grid">{modules.map(([name,desc],i)=><a class="card" href={`/features/${slugs[i]}`}><div class="icon">{String(i+1).padStart(2,'0')}</div><h3>{name}</h3><p class="muted">{desc}</p><span class="eyebrow">Explore module →</span></a>)}</div></div></section>
+</BaseLayout>

@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config/site';
+---
+<BaseLayout title="Page Not Found — School Pulse">
+<section class="page-hero"><div class="container"><span class="eyebrow">404</span><h1>That page isn’t here.</h1><p class="lead" style="margin-inline:auto">The link may be outdated or the page may have moved.</p><div class="cta-row" style="justify-content:center"><a class="btn btn-primary" href="/">Go Home</a><a class="btn btn-secondary" href={siteConfig.appUrl}>Open School Pulse</a></div></div></section>
+</BaseLayout>

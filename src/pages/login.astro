@@ -1,9 +1,10 @@
 ---
 import AuthLayout from '../layouts/AuthLayout.astro';
+import BrandLogo from '../components/BrandLogo.astro';
 ---
 <AuthLayout title="Sign In — School Pulse">
   <div class="auth-panel login-panel">
-    <div class="auth-brand"><span class="auth-brand-mark">SP</span><div><strong>School Pulse</strong><small>School Management System</small></div></div>
+    <a class="auth-brand brand-image-link" href="/" aria-label="School Pulse home"><BrandLogo kind="logo" mode="light" class="auth-brand-logo" /></a>
     <a class="auth-back" href="/">← Back to School Pulse home</a>
     <h1 class="auth-title">Welcome back</h1>
     <p class="auth-subtitle">Sign in to your School Pulse account to continue.</p>
@@ -20,13 +21,13 @@ import AuthLayout from '../layouts/AuthLayout.astro';
 
   <script type="module" is:inline>
     import { auth, functionsBaseUrl, appUrl } from '/js/firebase-client.js';
-    import { signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     const msg=document.getElementById('loginMessage');
     const setMessage=(text,type='error')=>{msg.hidden=!text;msg.className=type==='success'?'auth-success':type==='info'?'auth-info':'auth-error';msg.textContent=text||''};
     const button=document.getElementById('loginButton');
     document.getElementById('togglePassword').addEventListener('click',()=>{const el=document.getElementById('loginPassword');el.type=el.type==='password'?'text':'password'});
     document.getElementById('loginForm').addEventListener('submit',async e=>{
-      e.preventDefault();setMessage('');button.disabled=true;button.innerHTML='<span class="loading"></span> Signing in…';
+      e.preventDefault();setMessage('');button.disabled=true;button.innerHTML='<span class="loading" aria-hidden="true"></span> Signing in…';
       try{
         const email=document.getElementById('loginEmail').value.trim();const password=document.getElementById('loginPassword').value;
         const cred=await signInWithEmailAndPassword(auth,email,password);const user=cred.user;

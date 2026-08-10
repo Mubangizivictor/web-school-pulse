@@ -2,7 +2,9 @@ export const siteConfig = {
   brandName: 'School Pulse',
   companyName: 'Victorbee Technologies',
   websiteUrl: 'https://schoolpulse.victorbee.com',
-  appUrl: 'https://app.schoolpulse.victorbee.com',
+  // Keep the public site on a working app target until the custom
+  // app.schoolpulse.victorbee.com domain is attached to Firebase Hosting.
+  appUrl: 'https://school-pulse-3d95b.web.app',
   phone: '+256 793 128 137',
   whatsappNumber: '256793128137',
   email: 'mubangizivic@gmail.com',

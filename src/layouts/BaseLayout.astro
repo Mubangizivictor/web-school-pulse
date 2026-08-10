@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../config/site';
+const { title = 'School Pulse', description = 'Run your entire school from one secure platform built for modern African schools.' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>{title}</title>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="brand" aria-label="School Pulse home"><span class="brand-mark">SP</span><span>School Pulse</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="/">Home</a><a href="/features">Features</a><a href="/solutions">Solutions</a><a href="/pricing">Pricing</a><a href="/why-school-pulse">Why School Pulse</a><a href="/about">About</a><a href="/contact">Contact</a>
+      </nav>
+      <div class="nav-actions"><a class="btn btn-secondary" href={siteConfig.appUrl}>Login</a><a class="btn btn-primary" href="/demo">Book Demo</a></div>
+    </div>
+  </header>
+  <main><slot /></main>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div><a href="/" class="brand"><span class="brand-mark">SP</span><span>School Pulse</span></a><p class="muted">A Victorbee Technologies product for modern school operations.</p><p class="muted">{siteConfig.tagline}</p></div>
+        <div><h4>Product</h4><a href="/features">Features</a><a href="/pricing">Pricing</a><a href="/solutions">Solutions</a><a href="/demo">Book Demo</a></div>
+        <div><h4>Company</h4><a href="/about">About</a><a href="/why-school-pulse">Why School Pulse</a><a href="/contact">Contact</a><a href={siteConfig.appUrl}>Open App</a></div>
+        <div><h4>Legal</h4><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a><a href={`tel:${siteConfig.phone.replace(/\s/g,'')}`}>{siteConfig.phone}</a></div>
+      </div>
+      <div class="footer-bottom">© {new Date().getFullYear()} Victorbee Technologies. School Pulse. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -28,7 +28,7 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
   <meta name="twitter:card" content="summary_large_image" />
   <title>{title}</title>
 </head>
-<body>
+<body style={`--sp-icon-dark:url("${iconDarkUrl}")`}>
   <div class="brand-splash brand-splash-dark" id="brandSplash" aria-hidden="true">
     <img src={splashDarkUrl} alt="" decoding="async" />
   </div>

@@ -32,7 +32,7 @@ import iconLightUrl from '../../icon_light_Mode.png?url';
       <div style="margin:24px 0;text-align:left">
         <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px"><span id="stepSubmitted" style="font-weight:800;color:#159455">✓</span><div><strong>Application submitted</strong><div style="color:#718096;font-size:13px">Your registration is safely stored in School Pulse.</div></div></div>
         <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px"><span id="stepReview" style="font-weight:800;color:#b7791f">◷</span><div><strong>Owner review</strong><div id="reviewStepCopy" style="color:#718096;font-size:13px">Waiting for Victorbee Technologies to review the school.</div></div></div>
-        <div style="display:flex;gap:12px;align-items:flex-start"><span id="stepActivation" style="font-weight:800;color:#94a3b8">○</span><div><strong>School activation</strong><div id="activationStepCopy" style="color:#718096;font-size:13px">After approval, your School Admin account is linked to the live school workspace.</div></div></div>
+        <div style="display:flex;gap:12px;align-items:flex-start"><span id="stepActivation" style="font-weight:800;color:#94a3b8">○</span><div><strong>Payment & activation</strong><div id="activationStepCopy" style="color:#718096;font-size:13px">After approval, complete your subscription payment for manual verification.</div></div></div>
       </div>
 
       <div id="statusMessage" hidden style="margin:12px 0;font-size:13px;color:#68778d"></div>
@@ -66,23 +66,66 @@ import iconLightUrl from '../../icon_light_Mode.png?url';
     let currentUser=null;
     let checking=false;
 
+    function actionButton(label,href){openApp.textContent=label;openApp.href=href;openApp.style.display='flex'}
+
     function render(result={}){
       const status=result.status||q.get('status')||'pending_review';
+      const paymentStatus=result.paymentStatus||q.get('payment')||'';
       const school=result.schoolName||q.get('school')||'Your school';
       schoolEl.textContent=school;
       noteEl.hidden=true;
       openApp.style.display='none';
 
       if(status==='approved'){
-        badgeEl.textContent='Approved';
-        titleEl.textContent='Your school is approved';
-        copyEl.textContent=result.appReady?'Your School Pulse workspace is ready. You can now continue with the same administrator email and password you used during registration.':'Your application is approved. We are finishing the school workspace activation.';
-        iconEl.textContent='✓';
         stepReview.textContent='✓'; stepReview.style.color='#159455';
         reviewStepCopy.textContent='Application approved by the School Pulse platform owner.';
-        stepActivation.textContent=result.appReady?'✓':'◷'; stepActivation.style.color=result.appReady?'#159455':'#b7791f';
-        activationStepCopy.textContent=result.appReady?'Your school tenant and first School Admin account are active.':'Workspace activation is being finalized.';
-        if(result.appReady){openApp.href=result.appUrl||appUrl;openApp.style.display='flex'}
+
+        if(paymentStatus==='awaiting_payment'||!paymentStatus){
+          badgeEl.textContent='Payment Required';
+          titleEl.textContent='Your school has been approved';
+          copyEl.textContent='Your School Pulse account is ready for the subscription step. Complete the full plan payment and upload proof before the first dashboard activation.';
+          iconEl.textContent='₵';
+          stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
+          activationStepCopy.textContent='Waiting for the subscription payment and proof of payment.';
+          actionButton('Continue to Payment →',result.paymentUrl||'/payment');
+          return;
+        }
+        if(paymentStatus==='under_review'||paymentStatus==='payment_review'){
+          badgeEl.textContent='Payment Under Review';
+          titleEl.textContent='We received your payment proof';
+          copyEl.textContent='The SaaS Owner is verifying that the money was received. Your first dashboard access will unlock only after the payment is approved.';
+          iconEl.textContent='◷';
+          stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
+          activationStepCopy.textContent='Payment submitted. Waiting for manual verification.';
+          return;
+        }
+        if(paymentStatus==='rejected'){
+          badgeEl.textContent='Payment Needs Attention';
+          titleEl.textContent='Your payment proof was not approved';
+          copyEl.textContent='Review the note below and submit a corrected payment or proof. Your school remains locked until a payment is verified.';
+          iconEl.textContent='!';
+          stepActivation.textContent='!'; stepActivation.style.color='#c24132';
+          activationStepCopy.textContent='Payment verification needs correction.';
+          const reason=result.paymentRejectionReason||'Please review your payment details and submit again.';
+          noteEl.textContent=`Payment review note: ${reason}`;noteEl.hidden=false;
+          actionButton('Resubmit Payment Proof →','/payment');
+          return;
+        }
+        if(paymentStatus==='paid'&&result.appReady){
+          badgeEl.textContent='Active';
+          titleEl.textContent='Your School Pulse workspace is active';
+          copyEl.textContent='Your payment has been verified and your School Admin workspace is ready.';
+          iconEl.textContent='✓';
+          stepActivation.textContent='✓'; stepActivation.style.color='#159455';
+          activationStepCopy.textContent='Payment verified. Your school subscription and School Admin access are active.';
+          actionButton('Open School Pulse →',result.appUrl||appUrl);
+          return;
+        }
+        badgeEl.textContent='Activation Pending';
+        titleEl.textContent='Your school is approved';
+        copyEl.textContent='We are finishing your subscription activation.';
+        iconEl.textContent='◷';
+        stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
         return;
       }
       if(status==='rejected'){

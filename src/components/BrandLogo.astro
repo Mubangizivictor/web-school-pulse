@@ -1,0 +1,34 @@
+---
+import logoDark from '../../logo_for_dark_mode.png?url';
+import logoLight from '../../logo_for_light_mode.png?url';
+import iconDark from '../../icon_dark_mode.png?url';
+import iconLight from '../../icon_light_Mode.png?url';
+
+interface Props {
+  kind?: 'logo' | 'icon';
+  mode?: 'dark' | 'light' | 'auto';
+  alt?: string;
+  class?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const {
+  kind = 'logo',
+  mode = 'auto',
+  alt = kind === 'icon' ? 'School Pulse' : 'School Pulse',
+  class: className = '',
+  loading = 'eager',
+} = Astro.props;
+
+const darkSrc = kind === 'icon' ? iconDark : logoDark;
+const lightSrc = kind === 'icon' ? iconLight : logoLight;
+const fixedSrc = mode === 'dark' ? darkSrc : lightSrc;
+---
+{mode === 'auto' ? (
+  <picture class:list={['sp-brand-picture', className]}>
+    <source media="(prefers-color-scheme: dark)" srcset={darkSrc} />
+    <img class="sp-brand-image" src={lightSrc} alt={alt} loading={loading} decoding="async" />
+  </picture>
+) : (
+  <img class:list={['sp-brand-image', className]} src={fixedSrc} alt={alt} loading={loading} decoding="async" />
+)}

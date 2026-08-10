@@ -1,7 +1,7 @@
 ---
 import '../styles/auth.css';
 import '../styles/branding.css';
-import BrandLogo from '../components/BrandLogo.astro';
+import PublicBrand from '../components/PublicBrand.astro';
 import faviconUrl from '../../favicon.png?url';
 import iconLightUrl from '../../icon_light_Mode.png?url';
 import logoLightUrl from '../../logo_for_light_mode.png?url';
@@ -29,7 +29,7 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
   <div class="auth-shell">
     <aside class="auth-aside">
       <div class="auth-aside-inner">
-        <a href="/" aria-label="School Pulse home"><BrandLogo kind="logo" mode="dark" class="auth-aside-brand-logo" /></a>
+        <PublicBrand tone="dark" class="auth-aside-brand-lockup" />
         <h1>{asideTitle}</h1>
         <p>{asideCopy}</p>
         <div class="auth-benefits">
@@ -43,6 +43,7 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
     <main class="auth-main"><slot /></main>
   </div>
 
+  <script src="/js/onboarding-enhancements.js" defer></script>
   <script is:inline>
     (() => {
       const splash = document.getElementById('authBrandSplash');

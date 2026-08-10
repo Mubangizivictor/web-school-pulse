@@ -4,6 +4,7 @@ import '../styles/branding.css';
 import BrandLogo from '../components/BrandLogo.astro';
 import faviconUrl from '../../favicon.png?url';
 import iconLightUrl from '../../icon_light_Mode.png?url';
+import logoLightUrl from '../../logo_for_light_mode.png?url';
 import splashLightUrl from '../../splash_light_mode.png?url';
 import loadingIconUrl from '../../loading_icon.png?url';
 
@@ -21,7 +22,7 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
   <link rel="manifest" href="/manifest.webmanifest" />
   <title>{title}</title>
 </head>
-<body style={`--sp-loading-icon:url("${loadingIconUrl}")`}>
+<body style={`--sp-loading-icon:url("${loadingIconUrl}");--sp-auth-logo:url("${logoLightUrl}")`}>
   <div class="brand-splash brand-splash-light" id="authBrandSplash" aria-hidden="true">
     <img src={splashLightUrl} alt="" decoding="async" />
   </div>

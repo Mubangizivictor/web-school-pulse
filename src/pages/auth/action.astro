@@ -1,0 +1,31 @@
+---
+import AuthLayout from '../../layouts/AuthLayout.astro';
+import BrandLogo from '../../components/BrandLogo.astro';
+---
+<AuthLayout title="Verify Email — School Pulse" asideTitle="Secure your School Pulse account." asideCopy="Complete email verification to continue your school registration securely.">
+  <div class="auth-panel login-panel">
+    <a class="auth-brand-clean" href="/" aria-label="School Pulse home"><BrandLogo kind="icon" mode="light" class="auth-brand-clean-icon" /><span><strong>School Pulse</strong><small>School Management System</small></span></a>
+    <div class="verify-box" style="margin-top:34px">
+      <div class="verify-icon">✓</div>
+      <h1 class="auth-title" id="actionTitle">Verifying your email…</h1>
+      <p class="auth-subtitle" id="actionMessage">Please wait while School Pulse confirms your email address.</p>
+      <div id="actionLoader" class="loading" style="margin:22px auto"></div>
+      <a class="auth-btn auth-btn-primary" id="continueButton" href="/register?verified=1" hidden>Continue Registration →</a>
+      <a class="auth-btn auth-btn-outline" id="retryButton" href="/register" hidden>Back to Registration</a>
+    </div>
+  </div>
+  <script type="module" is:inline>
+    import { auth } from '/js/firebase-client.js';
+    import { applyActionCode } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    const params=new URLSearchParams(location.search);
+    const mode=params.get('mode'); const code=params.get('oobCode');
+    const title=document.getElementById('actionTitle'); const msg=document.getElementById('actionMessage');
+    const loader=document.getElementById('actionLoader'); const cont=document.getElementById('continueButton'); const retry=document.getElementById('retryButton');
+    async function run(){
+      if(mode!=='verifyEmail'||!code){title.textContent='Invalid verification link';msg.textContent='This School Pulse verification link is incomplete or invalid.';loader.hidden=true;retry.hidden=false;return}
+      try{await applyActionCode(auth,code);title.textContent='Email verified successfully';msg.textContent='Your email is confirmed. Continue to finish the school registration and submit it for review.';loader.hidden=true;cont.hidden=false}
+      catch(e){title.textContent='Verification link expired or invalid';msg.textContent='Request a new verification email from the registration page and try again.';loader.hidden=true;retry.hidden=false}
+    }
+    run();
+  </script>
+</AuthLayout>

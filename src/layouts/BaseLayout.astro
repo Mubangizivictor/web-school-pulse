@@ -1,6 +1,11 @@
 ---
 import '../styles/global.css';
 import { siteConfig } from '../config/site';
+import BrandLogo from '../components/BrandLogo.astro';
+import faviconUrl from '../../favicon.png?url';
+import iconDarkUrl from '../../icon_dark_mode.png?url';
+import splashDarkUrl from '../../splash_dark_mode.png?url';
+
 const { title = 'School Pulse', description = 'Run your entire school from one secure platform built for modern African schools.' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
 ---
@@ -10,7 +15,11 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
   <meta name="description" content={description} />
+  <meta name="theme-color" content="#05080d" />
   <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/png" href={faviconUrl} />
+  <link rel="apple-touch-icon" href={iconDarkUrl} />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
@@ -19,9 +28,16 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
   <title>{title}</title>
 </head>
 <body>
+  <div class="brand-splash brand-splash-dark" id="brandSplash" aria-hidden="true">
+    <img src={splashDarkUrl} alt="" decoding="async" />
+  </div>
+
   <header class="nav">
     <div class="container nav-inner">
-      <a href="/" class="brand" aria-label="School Pulse home"><span class="brand-mark">SP</span><span>School Pulse</span></a>
+      <a href="/" class="brand brand-image-link" aria-label="School Pulse home">
+        <BrandLogo kind="logo" mode="dark" class="brand-logo-full" />
+        <BrandLogo kind="icon" mode="dark" class="brand-icon-only" />
+      </a>
       <nav class="nav-links" aria-label="Main navigation">
         <a href="/">Home</a><a href="/about">About</a><a href="/pricing">Pricing</a><a href="/features">Features</a><a href="/solutions">Solutions</a><a href="/contact">Contact</a>
       </nav>
@@ -32,7 +48,7 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
   <footer class="footer">
     <div class="container">
       <div class="footer-grid">
-        <div><a href="/" class="brand"><span class="brand-mark">SP</span><span>School Pulse</span></a><p class="muted">A Victorbee Technologies product for modern school operations.</p><p class="muted">{siteConfig.tagline}</p></div>
+        <div><a href="/" class="brand brand-image-link"><BrandLogo kind="logo" mode="dark" class="footer-brand-logo" /></a><p class="muted">A Victorbee Technologies product for modern school operations.</p><p class="muted">{siteConfig.tagline}</p></div>
         <div><h4>Product</h4><a href="/features">Features</a><a href="/pricing">Pricing</a><a href="/solutions">Solutions</a><a href="/demo">Book Demo</a></div>
         <div><h4>Company</h4><a href="/about">About</a><a href="/why-school-pulse">Why School Pulse</a><a href="/contact">Contact</a><a href="/login">Open App</a></div>
         <div><h4>Legal</h4><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a><a href={`tel:${siteConfig.phone.replace(/\s/g,'')}`}>{siteConfig.phone}</a></div>
@@ -40,5 +56,25 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
       <div class="footer-bottom">© {new Date().getFullYear()} Victorbee Technologies. School Pulse. All rights reserved.</div>
     </div>
   </footer>
+
+  <script is:inline>
+    (() => {
+      const splash = document.getElementById('brandSplash');
+      if (!splash) return;
+      try {
+        if (sessionStorage.getItem('schoolPulseSplashSeen') === '1') {
+          splash.remove();
+          return;
+        }
+      } catch (_) {}
+      window.addEventListener('load', () => {
+        window.setTimeout(() => {
+          splash.classList.add('is-hidden');
+          window.setTimeout(() => splash.remove(), 320);
+          try { sessionStorage.setItem('schoolPulseSplashSeen', '1'); } catch (_) {}
+        }, 260);
+      }, { once: true });
+    })();
+  </script>
 </body>
 </html>

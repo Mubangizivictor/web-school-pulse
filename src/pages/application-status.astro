@@ -1,0 +1,22 @@
+---
+---
+<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="robots" content="noindex"/><title>Application Status — School Pulse</title><link rel="stylesheet" href="/src/styles/auth.css" /></head>
+<body>
+  <main class="status-page">
+    <section class="status-card">
+      <div class="auth-brand" style="justify-content:center"><span class="auth-brand-mark">SP</span><div style="text-align:left"><strong>School Pulse</strong><small>School Management System</small></div></div>
+      <div class="status-icon" id="statusIcon">◷</div><span class="status-badge" id="statusBadge">Under Review</span>
+      <h1 id="statusTitle">Your application is pending review</h1><div class="status-school" id="schoolName">Your school</div>
+      <p id="statusCopy">Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You will be notified once your school is approved and activated.</p>
+      <div style="border-top:1px solid #e7ebf1;margin:25px 0"></div>
+      <a class="auth-btn auth-btn-outline" href="/login" style="width:100%">← Back to Sign In</a>
+      <div class="auth-footer">Powered by Victorbee Technologies © 2026</div>
+    </section>
+  </main>
+  <script is:inline>
+    const q=new URLSearchParams(location.search);const status=q.get('status')||'pending';const school=q.get('school')||'Your school';document.getElementById('schoolName').textContent=school;
+    const data={pending:{badge:'Under Review',title:'Your application is pending review',copy:'Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You will be notified once your school is approved and activated.',icon:'◷'},pending_review:{badge:'Under Review',title:'Your application is pending review',copy:'Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You will be notified once your school is approved and activated.',icon:'◷'},approved:{badge:'Approved',title:'Your school application is approved',copy:'Your registration has been approved. School Pulse account activation and the web application launch are being finalized. We will provide access as soon as the school workspace is ready.',icon:'✓'},rejected:{badge:'Needs Attention',title:'Your application needs attention',copy:'We could not approve this application yet. Please contact School Pulse support so we can help you correct or complete the required information.',icon:'!'}};const d=data[status]||data.pending;document.getElementById('statusBadge').textContent=d.badge;document.getElementById('statusTitle').textContent=d.title;document.getElementById('statusCopy').textContent=d.copy;document.getElementById('statusIcon').textContent=d.icon;
+  </script>
+</body></html>

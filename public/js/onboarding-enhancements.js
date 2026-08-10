@@ -27,6 +27,7 @@
       input.addEventListener('input', () => {
         const clean = input.value.replace(/\D/g, '').slice(0, 9);
         if (input.value !== clean) input.value = clean;
+        input.dataset.available = '';
       });
     };
 
@@ -37,44 +38,53 @@
       if (!input) return false;
       const v = input.value.replace(/\D/g, '');
       const ok = /^7\d{8}$/.test(v);
+      if (!ok) input.dataset.available = 'false';
       fieldMessage(input, ok ? 'Valid Uganda mobile number.' : 'Enter a valid Uganda number, for example 772123456.', ok ? 'success' : 'error');
       return ok;
     };
 
-    ['schoolPhone', 'adminPhone'].forEach((id) => {
-      const input = $(id);
-      input?.addEventListener('blur', () => validateUgPhone(input));
-    });
-
     const checkAvailability = async (kind, value, input) => {
-      if (!value || !input) return;
+      if (!value || !input) return false;
+      input.dataset.available = 'checking';
       try {
-        fieldMessage(input, 'Checking…', 'info');
+        fieldMessage(input, 'Checking availability…', 'info');
         const response = await fetch(`${functionsBaseUrl}/checkRegistrationAvailability?kind=${encodeURIComponent(kind)}&value=${encodeURIComponent(value)}`);
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.message || 'Could not check this value.');
-        if (result.available) fieldMessage(input, result.message || 'Available.', 'success');
-        else fieldMessage(input, result.message || 'Already in use.', 'error');
+        input.dataset.available = result.available ? 'true' : 'false';
+        fieldMessage(input, result.message || (result.available ? 'Available.' : 'Already in use.'), result.available ? 'success' : 'error');
+        return Boolean(result.available);
       } catch (_) {
+        input.dataset.available = 'unknown';
         fieldMessage(input, 'We could not verify uniqueness right now. It will be checked again before submission.', 'info');
+        return false;
       }
     };
 
-    $('schoolPhone')?.addEventListener('blur', () => {
-      if (validateUgPhone($('schoolPhone'))) checkAvailability('phone', `256${$('schoolPhone').value.replace(/\D/g, '')}`, $('schoolPhone'));
+    ['schoolPhone', 'adminPhone'].forEach((id) => {
+      const input = $(id);
+      input?.addEventListener('blur', () => {
+        if (validateUgPhone(input)) checkAvailability('phone', `256${input.value.replace(/\D/g, '')}`, input);
+      });
     });
-    $('adminPhone')?.addEventListener('blur', () => {
-      if (validateUgPhone($('adminPhone'))) checkAvailability('phone', `256${$('adminPhone').value.replace(/\D/g, '')}`, $('adminPhone'));
-    });
+
+    $('schoolPrefix')?.addEventListener('input', () => { $('schoolPrefix').dataset.available = ''; });
     $('schoolPrefix')?.addEventListener('blur', () => {
       const value = $('schoolPrefix').value.trim().toUpperCase();
       if (value.length >= 2) checkAvailability('prefix', value, $('schoolPrefix'));
     });
 
     const schoolEmail = $('schoolEmail');
-    schoolEmail?.addEventListener('blur', () => {
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(schoolEmail.value.trim());
-      fieldMessage(schoolEmail, ok ? 'Email format looks good.' : 'Enter a valid school email address.', ok ? 'success' : 'error');
+    schoolEmail?.addEventListener('input', () => { schoolEmail.dataset.available = ''; });
+    schoolEmail?.addEventListener('blur', async () => {
+      const email = schoolEmail.value.trim().toLowerCase();
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!ok) {
+        schoolEmail.dataset.available = 'false';
+        fieldMessage(schoolEmail, 'Enter a valid school email address.', 'error');
+        return;
+      }
+      await checkAvailability('email', email, schoolEmail);
     });
 
     const prefix = $('schoolPrefix');
@@ -101,22 +111,17 @@
           <span data-rule="digit">number</span>
           <span data-rule="symbol">symbol</span>
         </div>
-        <button type="button" class="password-generate">Generate strong password</button>`;
+        <button type="button" class="password-generate">Generate a strong password</button>`;
       password.closest('.form-field')?.appendChild(wrapper);
 
       const refresh = () => {
         const v = password.value;
-        const rules = {
-          length: v.length >= 8,
-          upper: /[A-Z]/.test(v),
-          lower: /[a-z]/.test(v),
-          digit: /\d/.test(v),
-          symbol: /[^A-Za-z0-9]/.test(v),
-        };
+        const rules = { length:v.length>=8, upper:/[A-Z]/.test(v), lower:/[a-z]/.test(v), digit:/\d/.test(v), symbol:/[^A-Za-z0-9]/.test(v) };
         const score = Object.values(rules).filter(Boolean).length;
         wrapper.querySelector('.password-meter span').style.width = `${score * 20}%`;
         Object.entries(rules).forEach(([key, ok]) => wrapper.querySelector(`[data-rule="${key}"]`)?.classList.toggle('ok', ok));
-        fieldMessage(password, score === 5 ? 'Strong password.' : '', score === 5 ? 'success' : 'info');
+        if (score === 5) fieldMessage(password, 'Strong password.', 'success');
+        else fieldMessage(password, 'Use all five requirements for a strong password.', 'info');
         if (confirm?.value) fieldMessage(confirm, confirm.value === v ? 'Passwords match.' : 'Passwords do not match.', confirm.value === v ? 'success' : 'error');
       };
 
@@ -124,10 +129,10 @@
       confirm?.addEventListener('input', refresh);
       wrapper.querySelector('.password-generate')?.addEventListener('click', async () => {
         const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
-        const bytes = new Uint32Array(18);
+        const bytes = new Uint32Array(16);
         crypto.getRandomValues(bytes);
-        let generated = Array.from(bytes, n => alphabet[n % alphabet.length]).join('');
-        generated = `Sp!${generated}9aA`;
+        const random = Array.from(bytes, n => alphabet[n % alphabet.length]).join('');
+        const generated = `SP!${random}9aA`;
         password.type = 'text';
         if (confirm) confirm.type = 'text';
         password.value = generated;
@@ -137,8 +142,12 @@
         const btn = wrapper.querySelector('.password-generate');
         if (btn) {
           const old = btn.textContent;
-          btn.textContent = 'Generated & copied';
-          setTimeout(() => { btn.textContent = old; password.type = 'password'; if (confirm) confirm.type = 'password'; }, 2400);
+          btn.textContent = 'Generated and copied';
+          setTimeout(() => {
+            btn.textContent = old;
+            password.type = 'password';
+            if (confirm) confirm.type = 'password';
+          }, 2600);
         }
       });
     }

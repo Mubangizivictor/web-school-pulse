@@ -1,7 +1,7 @@
 ---
 import '../styles/auth.css';
 import '../styles/branding.css';
-import BrandLogo from '../components/BrandLogo.astro';
+import PublicBrand from '../components/PublicBrand.astro';
 import faviconUrl from '../../favicon.png?url';
 import iconLightUrl from '../../icon_light_Mode.png?url';
 ---
@@ -18,34 +18,66 @@ import iconLightUrl from '../../icon_light_Mode.png?url';
   <title>Application Status — School Pulse</title>
 </head>
 <body>
-  <main class="status-page">
-    <section class="status-card">
-      <a class="auth-brand brand-image-link" href="/" aria-label="School Pulse home" style="justify-content:center!important"><BrandLogo kind="logo" mode="light" class="auth-brand-logo" /></a>
-      <div class="status-icon" id="statusIcon">◷</div>
-      <span class="status-badge" id="statusBadge">Under Review</span>
-      <h1 id="statusTitle">Your application is pending review</h1>
-      <div class="status-school" id="schoolName">Your school</div>
-      <p id="statusCopy">Your institution registration has been received and is currently being reviewed by Victorbee Technologies.</p>
+  <main class="status-page premium-status-page">
+    <section class="status-card premium-status-card">
+      <PublicBrand tone="light" centered class="status-brand-lockup" />
 
-      <div id="reviewNote" hidden style="margin:18px 0;padding:14px 16px;border-radius:12px;background:#fff4f2;color:#9f2d20;text-align:left"></div>
-
-      <div style="margin:24px 0;text-align:left">
-        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px"><span id="stepSubmitted" style="font-weight:800;color:#159455">✓</span><div><strong>Application submitted</strong><div style="color:#718096;font-size:13px">Your registration is safely stored in School Pulse.</div></div></div>
-        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px"><span id="stepReview" style="font-weight:800;color:#b7791f">◷</span><div><strong>Owner review</strong><div id="reviewStepCopy" style="color:#718096;font-size:13px">Waiting for Victorbee Technologies to review the school.</div></div></div>
-        <div style="display:flex;gap:12px;align-items:flex-start"><span id="stepActivation" style="font-weight:800;color:#94a3b8">○</span><div><strong>Payment & activation</strong><div id="activationStepCopy" style="color:#718096;font-size:13px">After approval, complete your subscription payment for manual verification.</div></div></div>
+      <div class="status-hero">
+        <div class="status-icon" id="statusIcon" aria-hidden="true">◷</div>
+        <span class="status-badge" id="statusBadge">Under Review</span>
+        <h1 id="statusTitle">Your application is pending review</h1>
+        <div class="status-school" id="schoolName">Your school</div>
+        <p id="statusCopy">Your institution registration has been received and is currently being reviewed by Victorbee Technologies.</p>
       </div>
 
-      <div id="statusMessage" hidden style="margin:12px 0;font-size:13px;color:#68778d"></div>
-      <button class="auth-btn auth-btn-primary" id="checkStatus" type="button" style="width:100%">↻ Check Status</button>
-      <a class="auth-btn auth-btn-success" id="openApp" href="#" style="width:100%;margin-top:10px;display:none">Open School Pulse →</a>
-      <div style="border-top:1px solid #e7ebf1;margin:22px 0"></div>
-      <a class="auth-btn auth-btn-outline" href="/login" style="width:100%">← Back to Sign In</a>
+      <div id="reviewNote" class="review-note" hidden></div>
+
+      <div class="progress-card" aria-label="School activation progress">
+        <div class="progress-row">
+          <span class="progress-dot done" id="stepSubmitted">✓</span>
+          <div><strong>Application submitted</strong><small>Your registration is safely stored in School Pulse.</small></div>
+        </div>
+        <div class="progress-row">
+          <span class="progress-dot current" id="stepReview">◷</span>
+          <div><strong>Owner review</strong><small id="reviewStepCopy">Waiting for Victorbee Technologies to review the school.</small></div>
+        </div>
+        <div class="progress-row">
+          <span class="progress-dot" id="stepActivation">○</span>
+          <div><strong>Payment & activation</strong><small id="activationStepCopy">After approval, complete your subscription payment for manual verification.</small></div>
+        </div>
+      </div>
+
+      <div id="activationPanel" class="activation-panel" hidden>
+        <div class="activation-panel-head">
+          <span class="activation-check">✓</span>
+          <div><strong>Your School Pulse account is ready</strong><small>Use the administrator email and password created during registration.</small></div>
+        </div>
+        <div class="access-grid">
+          <div class="access-item"><span>Mobile</span><strong>Android & iPhone</strong><small>Sign in from the School Pulse app.</small></div>
+          <div class="access-item"><span>Desktop</span><strong>School Pulse Desktop</strong><small>Use the same administrator credentials.</small></div>
+        </div>
+        <p class="access-note">The browser dashboard is not enabled yet. We will never send you to an unfinished web app.</p>
+      </div>
+
+      <div id="statusMessage" class="status-message" hidden></div>
+      <div class="status-actions">
+        <button class="auth-btn auth-btn-primary" id="checkStatus" type="button">↻ Check Status</button>
+        <a class="auth-btn auth-btn-success" id="primaryAction" href="#" hidden>Continue →</a>
+      </div>
+      <a class="status-secondary-link" href="/login">← Back to Sign In</a>
       <div class="auth-footer">Powered by Victorbee Technologies © 2026</div>
     </section>
   </main>
 
+  <style>
+    .premium-status-page{min-height:100vh;display:grid;place-items:center;padding:42px 20px;background:radial-gradient(circle at 50% 0,#f8fbff 0,#eef3f9 54%,#e8eef6 100%)}
+    .premium-status-card{width:min(580px,100%);box-sizing:border-box;background:#fff;border:1px solid #e2e9f2;border-radius:26px;padding:34px 38px 26px;box-shadow:0 26px 80px rgba(20,42,76,.12)}
+    .status-hero{text-align:center}.status-icon{width:62px;height:62px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;background:#fff8e7;border:1px solid #f4c45e;color:#d88900;font-size:27px;font-weight:800}.status-badge{display:inline-flex;padding:6px 11px;border-radius:999px;background:#fff2cb;color:#996208;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.055em}.status-hero h1{font-size:28px;line-height:1.12;letter-spacing:-.035em;color:#172033;margin:15px auto 5px;max-width:470px}.status-school{font-size:15px;font-weight:700;color:#62728a}.status-hero p{max-width:465px;margin:13px auto 0;color:#718096;line-height:1.6;font-size:14px}.review-note{margin:20px 0 0;padding:14px 16px;border-radius:14px;background:#fff4f2;border:1px solid #f2d0ca;color:#9f2d20;font-size:13px;line-height:1.5}.progress-card{margin:26px 0 22px;border:1px solid #e5eaf1;border-radius:18px;background:#fbfcfe;padding:18px}.progress-row{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;position:relative;padding:5px 0 18px}.progress-row:last-child{padding-bottom:5px}.progress-row:not(:last-child):after{content:'';position:absolute;left:13px;top:34px;bottom:0;width:2px;background:#e1e7ef}.progress-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid #d8e0eb;color:#91a0b5;font-weight:900;font-size:13px;z-index:1}.progress-dot.done{background:#eaf8f0;border-color:#8bd0a9;color:#198953}.progress-dot.current{background:#fff5d8;border-color:#efc664;color:#ae7200}.progress-row strong{display:block;color:#202b3d;font-size:14px}.progress-row small{display:block;color:#78879a;font-size:12px;line-height:1.45;margin-top:3px}.activation-panel{margin:0 0 22px;border:1px solid #bee6cf;background:#effaf4;border-radius:18px;padding:18px}.activation-panel-head{display:flex;gap:12px;align-items:flex-start}.activation-check{width:34px;height:34px;border-radius:50%;background:#20975b;color:#fff;display:grid;place-items:center;font-weight:900;flex:0 0 auto}.activation-panel-head strong{display:block;color:#195f3e}.activation-panel-head small{display:block;color:#537566;margin-top:4px;line-height:1.45}.access-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.access-item{border:1px solid #d6eadf;background:#fff;border-radius:13px;padding:13px}.access-item span{display:block;font-size:10px;font-weight:800;color:#2b7c55;text-transform:uppercase}.access-item strong{display:block;font-size:13px;color:#203429;margin-top:4px}.access-item small{display:block;font-size:11px;color:#6f8178;margin-top:4px;line-height:1.4}.access-note{font-size:11px;color:#5f7469;margin:12px 0 0;line-height:1.5}.status-message{font-size:12px;color:#68778d;text-align:center;margin:0 0 12px}.status-actions{display:grid;gap:10px}.status-actions .auth-btn{width:100%}.status-secondary-link{display:block;text-align:center;margin:18px 0 0;padding-top:18px;border-top:1px solid #e8edf3;color:#64748b;text-decoration:none;font-size:12px;font-weight:700}.status-secondary-link:hover{color:#256fd3}
+    @media(max-width:640px){.premium-status-page{padding:18px 12px}.premium-status-card{border-radius:22px;padding:26px 20px 22px}.status-hero h1{font-size:24px}.access-grid{grid-template-columns:1fr}}
+  </style>
+
   <script type="module" is:inline>
-    import { auth, functionsBaseUrl, appUrl } from '/js/firebase-client.js';
+    import { auth, functionsBaseUrl } from '/js/firebase-client.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
     const q=new URLSearchParams(location.search);
@@ -56,133 +88,47 @@ import iconLightUrl from '../../icon_light_Mode.png?url';
     const iconEl=document.getElementById('statusIcon');
     const noteEl=document.getElementById('reviewNote');
     const checkButton=document.getElementById('checkStatus');
-    const openApp=document.getElementById('openApp');
+    const primaryAction=document.getElementById('primaryAction');
+    const activationPanel=document.getElementById('activationPanel');
     const statusMessage=document.getElementById('statusMessage');
     const reviewStepCopy=document.getElementById('reviewStepCopy');
     const activationStepCopy=document.getElementById('activationStepCopy');
     const stepReview=document.getElementById('stepReview');
     const stepActivation=document.getElementById('stepActivation');
+    let currentUser=null, checking=false;
 
-    let currentUser=null;
-    let checking=false;
-
-    function actionButton(label,href){openApp.textContent=label;openApp.href=href;openApp.style.display='flex'}
+    function setStep(el,text,state){el.textContent=text;el.className=`progress-dot ${state||''}`.trim()}
+    function actionButton(label,href){primaryAction.textContent=label;primaryAction.href=href;primaryAction.hidden=false}
+    function resetAction(){primaryAction.hidden=true;activationPanel.hidden=true;noteEl.hidden=true}
 
     function render(result={}){
       const status=result.status||q.get('status')||'pending_review';
       const paymentStatus=result.paymentStatus||q.get('payment')||'';
       const school=result.schoolName||q.get('school')||'Your school';
-      schoolEl.textContent=school;
-      noteEl.hidden=true;
-      openApp.style.display='none';
+      schoolEl.textContent=school;resetAction();
 
       if(status==='approved'){
-        stepReview.textContent='✓'; stepReview.style.color='#159455';
+        setStep(stepReview,'✓','done');
         reviewStepCopy.textContent='Application approved by the School Pulse platform owner.';
-
-        if(paymentStatus==='awaiting_payment'||!paymentStatus){
-          badgeEl.textContent='Payment Required';
-          titleEl.textContent='Your school has been approved';
-          copyEl.textContent='Your School Pulse account is ready for the subscription step. Complete the full plan payment and upload proof before the first dashboard activation.';
-          iconEl.textContent='₵';
-          stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
-          activationStepCopy.textContent='Waiting for the subscription payment and proof of payment.';
-          actionButton('Continue to Payment →',result.paymentUrl||'/payment');
-          return;
-        }
-        if(paymentStatus==='under_review'||paymentStatus==='payment_review'){
-          badgeEl.textContent='Payment Under Review';
-          titleEl.textContent='We received your payment proof';
-          copyEl.textContent='The SaaS Owner is verifying that the money was received. Your first dashboard access will unlock only after the payment is approved.';
-          iconEl.textContent='◷';
-          stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
-          activationStepCopy.textContent='Payment submitted. Waiting for manual verification.';
-          return;
-        }
-        if(paymentStatus==='rejected'){
-          badgeEl.textContent='Payment Needs Attention';
-          titleEl.textContent='Your payment proof was not approved';
-          copyEl.textContent='Review the note below and submit a corrected payment or proof. Your school remains locked until a payment is verified.';
-          iconEl.textContent='!';
-          stepActivation.textContent='!'; stepActivation.style.color='#c24132';
-          activationStepCopy.textContent='Payment verification needs correction.';
-          const reason=result.paymentRejectionReason||'Please review your payment details and submit again.';
-          noteEl.textContent=`Payment review note: ${reason}`;noteEl.hidden=false;
-          actionButton('Resubmit Payment Proof →','/payment');
-          return;
-        }
-        if(paymentStatus==='paid'&&result.appReady){
-          badgeEl.textContent='Active';
-          titleEl.textContent='Your School Pulse workspace is active';
-          copyEl.textContent='Your payment has been verified and your School Admin workspace is ready.';
-          iconEl.textContent='✓';
-          stepActivation.textContent='✓'; stepActivation.style.color='#159455';
-          activationStepCopy.textContent='Payment verified. Your school subscription and School Admin access are active.';
-          actionButton('Open School Pulse →',result.appUrl||appUrl);
-          return;
-        }
-        badgeEl.textContent='Activation Pending';
-        titleEl.textContent='Your school is approved';
-        copyEl.textContent='We are finishing your subscription activation.';
-        iconEl.textContent='◷';
-        stepActivation.textContent='◷'; stepActivation.style.color='#b7791f';
-        return;
+        if(paymentStatus==='awaiting_payment'||!paymentStatus){badgeEl.textContent='Payment Required';titleEl.textContent='Your school has been approved';copyEl.textContent='Complete the full subscription payment and upload proof before your first School Pulse access is activated.';iconEl.textContent='₵';setStep(stepActivation,'◷','current');activationStepCopy.textContent='Waiting for subscription payment and proof of payment.';actionButton('Continue to Payment →',result.paymentUrl||'/payment');return}
+        if(paymentStatus==='under_review'||paymentStatus==='payment_review'){badgeEl.textContent='Payment Under Review';titleEl.textContent='We received your payment proof';copyEl.textContent='We are verifying that the money was received. Your first access unlocks only after manual payment approval.';iconEl.textContent='◷';setStep(stepActivation,'◷','current');activationStepCopy.textContent='Payment submitted. Waiting for manual verification.';return}
+        if(paymentStatus==='rejected'){badgeEl.textContent='Payment Needs Attention';titleEl.textContent='Your payment proof was not approved';copyEl.textContent='Review the note below and submit corrected payment proof. Your school stays locked until payment is verified.';iconEl.textContent='!';setStep(stepActivation,'!','current');activationStepCopy.textContent='Payment verification needs correction.';noteEl.textContent=`Payment review note: ${result.paymentRejectionReason||'Please review your payment details and submit again.'}`;noteEl.hidden=false;actionButton('Resubmit Payment Proof →','/payment');return}
+        if(paymentStatus==='paid'&&result.appReady){badgeEl.textContent='Active';titleEl.textContent='Your School Pulse account is active';copyEl.textContent='Payment is verified and the School Admin account is ready to use.';iconEl.textContent='✓';setStep(stepActivation,'✓','done');activationStepCopy.textContent='Payment verified. Your subscription and School Admin access are active.';activationPanel.hidden=false;return}
+        badgeEl.textContent='Activation Pending';titleEl.textContent='Your school is approved';copyEl.textContent='We are finishing your subscription activation.';iconEl.textContent='◷';setStep(stepActivation,'◷','current');activationStepCopy.textContent='Final activation is in progress.';return;
       }
-      if(status==='rejected'){
-        badgeEl.textContent='Needs Attention';
-        titleEl.textContent='Your application needs attention';
-        copyEl.textContent='This application was not approved. Review the reason below, then contact School Pulse support if you need help.';
-        iconEl.textContent='!';
-        stepReview.textContent='!'; stepReview.style.color='#c24132';
-        reviewStepCopy.textContent='The platform owner could not approve the current application.';
-        stepActivation.textContent='○'; stepActivation.style.color='#94a3b8';
-        if(result.rejectionReason){noteEl.textContent=`Review note: ${result.rejectionReason}`;noteEl.hidden=false}
-        return;
-      }
-      if(status==='email_verified'||status==='email_verification_pending'){
-        badgeEl.textContent='Registration Incomplete';
-        titleEl.textContent='Finish your school application';
-        copyEl.textContent='Your account exists, but the registration must be completed before it can be reviewed.';
-        iconEl.textContent='…';
-        stepReview.textContent='○'; stepReview.style.color='#94a3b8';
-        return;
-      }
-      badgeEl.textContent='Under Review';
-      titleEl.textContent='Your application is pending review';
-      copyEl.textContent='Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You can leave this page and return later.';
-      iconEl.textContent='◷';
-      stepReview.textContent='◷'; stepReview.style.color='#b7791f';
-      reviewStepCopy.textContent='Waiting for Victorbee Technologies to review the school.';
-      stepActivation.textContent='○'; stepActivation.style.color='#94a3b8';
+      if(status==='rejected'){badgeEl.textContent='Needs Attention';titleEl.textContent='Your application needs attention';copyEl.textContent='This application was not approved. Review the reason below, then contact School Pulse support if you need help.';iconEl.textContent='!';setStep(stepReview,'!','current');reviewStepCopy.textContent='The platform owner could not approve the current application.';setStep(stepActivation,'○','');if(result.rejectionReason){noteEl.textContent=`Review note: ${result.rejectionReason}`;noteEl.hidden=false}return}
+      if(status==='email_verified'||status==='email_verification_pending'){badgeEl.textContent='Registration Incomplete';titleEl.textContent='Finish your school application';copyEl.textContent='Your account exists, but registration must be completed before owner review.';iconEl.textContent='…';setStep(stepReview,'○','');return}
+      badgeEl.textContent='Under Review';titleEl.textContent='Your application is pending review';copyEl.textContent='Your institution registration has been received and is currently being reviewed by Victorbee Technologies. You can leave this page and return later.';iconEl.textContent='◷';setStep(stepReview,'◷','current');reviewStepCopy.textContent='Waiting for Victorbee Technologies to review the school.';setStep(stepActivation,'○','');
     }
 
     async function checkStatus(silent=false){
       if(checking)return;
-      if(!currentUser){
-        if(!silent){statusMessage.textContent='Sign in with the administrator account to refresh this status.';statusMessage.hidden=false}
-        return;
-      }
-      checking=true;
-      if(!silent){checkButton.disabled=true;checkButton.textContent='Checking…';statusMessage.hidden=true}
-      try{
-        const token=await currentUser.getIdToken(true);
-        const response=await fetch(`${functionsBaseUrl}/getSchoolApplicationStatus`,{headers:{Authorization:`Bearer ${token}`}});
-        const result=await response.json().catch(()=>({}));
-        if(response.status===404){location.href='/register?verified=1';return}
-        if(!response.ok)throw new Error(result.message||result.error||'Could not refresh application status.');
-        render(result);
-        if(!silent){statusMessage.textContent='Status updated just now.';statusMessage.hidden=false}
-      }catch(error){
-        if(!silent){statusMessage.textContent=error?.message||'Could not refresh application status.';statusMessage.hidden=false}
-      }finally{
-        checking=false;
-        if(!silent){checkButton.disabled=false;checkButton.textContent='↻ Check Status'}
-      }
+      if(!currentUser){if(!silent){statusMessage.textContent='Sign in with the administrator account to refresh this status.';statusMessage.hidden=false}return}
+      checking=true;if(!silent){checkButton.disabled=true;checkButton.textContent='Checking…';statusMessage.hidden=true}
+      try{const token=await currentUser.getIdToken(true);const response=await fetch(`${functionsBaseUrl}/getSchoolApplicationStatus`,{headers:{Authorization:`Bearer ${token}`}});const result=await response.json().catch(()=>({}));if(response.status===404){location.href='/register?verified=1';return}if(!response.ok)throw new Error(result.message||result.error||'Could not refresh application status.');render(result);if(!silent){statusMessage.textContent='Status updated just now.';statusMessage.hidden=false}}
+      catch(error){if(!silent){statusMessage.textContent=error?.message||'Could not refresh application status.';statusMessage.hidden=false}}
+      finally{checking=false;if(!silent){checkButton.disabled=false;checkButton.textContent='↻ Check Status'}}
     }
-
-    checkButton.addEventListener('click',()=>checkStatus(false));
-    render();
-    onAuthStateChanged(auth,user=>{currentUser=user;if(user)checkStatus(true)});
-    setInterval(()=>{if(currentUser)checkStatus(true)},30000);
+    checkButton.addEventListener('click',()=>checkStatus(false));render();onAuthStateChanged(auth,user=>{currentUser=user;if(user)checkStatus(true)});setInterval(()=>{if(currentUser)checkStatus(true)},30000);
   </script>
 </body></html>

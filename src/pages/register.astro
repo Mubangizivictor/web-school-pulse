@@ -1,185 +1,112 @@
 ---
 import AuthLayout from '../layouts/AuthLayout.astro';
+import BrandLogo from '../components/BrandLogo.astro';
 ---
 <AuthLayout title="Register Your School — School Pulse">
   <div class="auth-panel" id="registrationApp">
-    <div class="auth-brand"><span class="auth-brand-mark">SP</span><div><strong>School Pulse</strong><small>School Management System</small></div></div>
+    <a class="auth-brand-clean" href="/" aria-label="School Pulse home"><BrandLogo kind="icon" mode="light" class="auth-brand-clean-icon" /><span><strong>School Pulse</strong><small>School Management System</small></span></a>
     <a class="auth-back" href="/login">← Back to Sign In</a>
     <h1 class="auth-title">Create your school account</h1>
     <p class="auth-subtitle">Get your school application ready in a few guided steps.</p>
-
     <div class="steps" aria-label="Registration progress">
-      <div class="step active" data-step-indicator="0"><div class="step-dot">1</div><span>School</span></div>
-      <div class="step" data-step-indicator="1"><div class="step-dot">2</div><span>Location</span></div>
-      <div class="step" data-step-indicator="2"><div class="step-dot">3</div><span>Plan</span></div>
-      <div class="step" data-step-indicator="3"><div class="step-dot">4</div><span>User</span></div>
-      <div class="step" data-step-indicator="4"><div class="step-dot">5</div><span>Verify</span></div>
-      <div class="step" data-step-indicator="5"><div class="step-dot">6</div><span>Terms</span></div>
+      {['School','Location','Plan','User','Verify','Terms'].map((s,i)=><div class:list={['step',i===0&&'active']} data-step-indicator={i}><div class="step-dot">{i+1}</div><span>{s}</span></div>)}
     </div>
-
     <div id="globalMessage" hidden></div>
 
     <section class="step-section active" data-step="0">
       <h2 class="section-title">School Details</h2><p class="section-copy">Tell us about your institution.</p>
       <div class="form-grid">
-        <div class="form-field"><label>School Name <span class="req">*</span></label><input id="schoolName" autocomplete="organization" placeholder="e.g. Sunrise High School" /></div>
-        <div class="form-field"><label>Short Name</label><input id="shortName" placeholder="e.g. SHS" maxlength="20" /></div>
-        <div class="form-field"><label>School Email <span class="req">*</span></label><input id="schoolEmail" type="email" autocomplete="email" placeholder="school@example.com" /></div>
-        <div class="form-field"><label>Phone Number <span class="req">*</span></label><div class="input-prefix"><span>+256</span><input id="schoolPhone" inputmode="tel" placeholder="7XXXXXXXX" maxlength="9" /></div></div>
-        <div class="form-field"><label>School Category <span class="req">*</span></label><select id="schoolCategory"><option value="">Select category</option><option>Private</option><option>Government / Public</option><option>International</option><option>Faith-based</option><option>NGO / Community</option><option>Other</option></select></div>
-        <div class="form-field"><label>P.O. Box</label><input id="poBox" placeholder="P.O. Box number" /></div>
-        <div class="form-field"><label>School Prefix / Initials <span class="req">*</span></label><input id="schoolPrefix" placeholder="e.g. SHS" maxlength="12" style="text-transform:uppercase" /><span class="hint">Used as the school's short identity. This should be chosen carefully.</span></div>
-        <div class="form-field"><label>Tagline / Motto</label><input id="motto" placeholder="e.g. Excellence in Education" /></div>
-      </div>
-      <div class="form-actions right"><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
+        <div class="form-field"><label>School Name *</label><input id="schoolName" placeholder="e.g. Sunrise High School" /></div>
+        <div class="form-field"><label>Short Name</label><input id="shortName" placeholder="e.g. SHS" /></div>
+        <div class="form-field"><label>School Email *</label><input id="schoolEmail" type="email" placeholder="school@example.com" /></div>
+        <div class="form-field"><label>Phone Number *</label><div class="input-prefix"><span>+256</span><input id="schoolPhone" inputmode="tel" placeholder="7XXXXXXXX" maxlength="9" /></div></div>
+        <div class="form-field"><label>School Category *</label><select id="schoolCategory"><option value="">Select category</option><option>Private</option><option>Government / Public</option><option>International</option><option>Faith-based</option><option>NGO / Community</option><option>Other</option></select></div>
+        <div class="form-field"><label>P.O. Box</label><input id="poBox" /></div>
+        <div class="form-field"><label>School Prefix / Initials *</label><input id="schoolPrefix" placeholder="e.g. SHS" maxlength="12" /></div>
+        <div class="form-field"><label>Tagline / Motto</label><input id="motto" /></div>
+      </div><div class="form-actions right"><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
     </section>
 
     <section class="step-section" data-step="1">
       <h2 class="section-title">Location Details</h2><p class="section-copy">Where your school is located.</p>
       <div class="form-grid">
-        <div class="form-field"><label>Region <span class="req">*</span></label><select id="region"><option value="">Select region</option><option>Central</option><option>Eastern</option><option>Northern</option><option>Western</option></select></div>
-        <div class="form-field"><label>District <span class="req">*</span></label><input id="district" placeholder="e.g. Kampala, Mbarara, Wakiso" /></div>
-        <div class="form-field"><label>Physical Address <span class="req">*</span></label><input id="address" placeholder="Road, parish, town or village" /></div>
-        <div class="form-field"><label>Website</label><input id="schoolWebsite" type="url" placeholder="https://school.ac.ug" /></div>
-        <div class="form-field"><label>Location Name</label><input id="locationName" placeholder="Town, village or campus" /></div>
-        <div class="form-field"><label>Latitude</label><input id="latitude" inputmode="decimal" placeholder="Optional" /></div>
-        <div class="form-field"><label>Longitude</label><input id="longitude" inputmode="decimal" placeholder="Optional" /></div>
-      </div>
-      <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
+        <div class="form-field"><label>Region *</label><select id="region"><option value="">Select region</option><option>Central</option><option>Eastern</option><option>Northern</option><option>Western</option></select></div>
+        <div class="form-field"><label>District *</label><input id="district" /></div>
+        <div class="form-field"><label>Physical Address *</label><input id="address" /></div>
+        <div class="form-field"><label>Website</label><input id="schoolWebsite" type="url" /></div>
+        <div class="form-field"><label>Location Name</label><input id="locationName" /></div>
+        <div class="form-field"><label>Latitude</label><input id="latitude" /></div>
+        <div class="form-field"><label>Longitude</label><input id="longitude" /></div>
+      </div><div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
     </section>
 
     <section class="step-section" data-step="2">
-      <h2 class="section-title">School Pulse & Plan</h2><p class="section-copy">Choose the subscription level that best fits your school. Final activation happens after review.</p>
+      <h2 class="section-title">School Pulse & Plan</h2><p class="section-copy">Choose your plan and the optional modules your school needs.</p>
       <div class="form-field full"><label>Application</label><input value="School Pulse — Complete School Management Platform" disabled /></div>
-      <div class="form-field full" style="margin-top:18px"><label>Plan <span class="req">*</span></label><div class="choice-row">
-        <div class="choice"><input type="radio" id="planStarter" name="plan" value="Starter" checked /><label for="planStarter">Starter</label></div>
-        <div class="choice"><input type="radio" id="planGrowth" name="plan" value="Growth" /><label for="planGrowth">Growth</label></div>
-        <div class="choice"><input type="radio" id="planPro" name="plan" value="Pro" /><label for="planPro">Pro</label></div>
-        <div class="choice"><input type="radio" id="planEnterprise" name="plan" value="Enterprise" /><label for="planEnterprise">Enterprise</label></div>
+      <div class="form-field full" style="margin-top:18px"><label>Plan *</label><div class="choice-row">
+        {['Starter','Growth','Pro','Enterprise'].map((p,i)=><div class="choice"><input type="radio" id={`plan${p}`} name="plan" value={p} checked={i===0}/><label for={`plan${p}`}>{p}</label></div>)}
       </div></div>
-      <div class="form-field full" style="margin-top:20px"><label>Core modules</label><span class="hint">Your plan controls entitlements; these core areas remain part of the School Pulse platform.</span><div class="module-row" style="margin-top:10px">
-        <span class="module-chip included">✓ Students</span><span class="module-chip included">✓ Attendance</span><span class="module-chip included">✓ Academics</span><span class="module-chip included">✓ Administration</span><span class="module-chip">Finance</span><span class="module-chip">Boarding</span><span class="module-chip">Health</span><span class="module-chip">Library</span><span class="module-chip">Transport</span><span class="module-chip">Messaging</span>
-      </div></div>
+      <div class="form-field full" style="margin-top:20px"><label>Modules</label><span class="hint">Green modules are included by default. Click optional modules to add or remove them.</span>
+        <div class="module-row" id="moduleChooser" style="margin-top:10px">
+          {['Students','Attendance','Academics','Administration'].map(m=><button type="button" class="module-chip included locked" data-module={m} aria-pressed="true">✓ {m}</button>)}
+          {['Finance','Boarding','Health','Library','Transport','Messaging'].map(m=><button type="button" class="module-chip selectable" data-module={m} aria-pressed="false">+ {m}</button>)}
+        </div>
+        <span class="hint" id="moduleSummary">4 core modules selected.</span>
+      </div>
       <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
     </section>
 
     <section class="step-section" data-step="3">
-      <h2 class="section-title">Administrator Details</h2><p class="section-copy">This person will be the primary contact for this school application.</p>
+      <h2 class="section-title">Administrator Details</h2><p class="section-copy">This account will represent the school during onboarding.</p>
       <div class="form-grid">
-        <div class="form-field"><label>First Name <span class="req">*</span></label><input id="firstName" autocomplete="given-name" placeholder="First name" /></div>
-        <div class="form-field"><label>Last Name <span class="req">*</span></label><input id="lastName" autocomplete="family-name" placeholder="Last name" /></div>
+        <div class="form-field"><label>First Name *</label><input id="firstName" /></div><div class="form-field"><label>Last Name *</label><input id="lastName" /></div>
         <div class="form-field"><label>Gender</label><select id="gender"><option value="">Select gender</option><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
-        <div class="form-field"><label>Phone Number <span class="req">*</span></label><div class="input-prefix"><span>+256</span><input id="adminPhone" inputmode="tel" placeholder="7XXXXXXXX" maxlength="9" /></div></div>
-        <div class="form-field full"><label>Email <span class="req">*</span></label><input id="adminEmail" type="email" autocomplete="email" placeholder="admin@example.com" /></div>
-        <div class="form-field full"><label>Username</label><input id="username" disabled /><span class="hint">Auto-generated from your email address.</span></div>
-        <div class="form-field"><label>Password <span class="req">*</span></label><input id="password" type="password" autocomplete="new-password" placeholder="Min. 8 chars, upper, lower, digit & symbol" /></div>
-        <div class="form-field"><label>Confirm Password <span class="req">*</span></label><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Repeat password" /></div>
-      </div>
-      <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" id="createAccountBtn">Create & Verify Email →</button></div>
+        <div class="form-field"><label>Phone Number *</label><div class="input-prefix"><span>+256</span><input id="adminPhone" inputmode="tel" maxlength="9" /></div></div>
+        <div class="form-field full"><label>Email *</label><input id="adminEmail" type="email" /></div><div class="form-field full"><label>Username</label><input id="username" disabled /></div>
+        <div class="form-field"><label>Password *</label><input id="password" type="password" placeholder="Min. 8 chars, upper, lower, digit & symbol" /></div><div class="form-field"><label>Confirm Password *</label><input id="confirmPassword" type="password" /></div>
+      </div><div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" id="createAccountBtn">Create & Verify Email →</button></div>
     </section>
 
     <section class="step-section" data-step="4">
-      <h2 class="section-title">Verify Your Email</h2><p class="section-copy">We sent a secure Firebase verification link to your email address.</p>
-      <div class="verify-box">
-        <div class="verify-icon">✉</div>
-        <div>Verification email sent to:</div><div class="verify-email" id="verifyEmailText">—</div>
-        <p class="verify-state" id="verifyState">Open the email and click the verification link, then return here.</p>
-        <div class="choice-row" style="justify-content:center;margin-top:18px"><button class="auth-btn auth-btn-outline" id="resendVerification">Resend Email</button><button class="auth-btn auth-btn-primary" id="checkVerification">I've Verified My Email</button></div>
-      </div>
-      <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" id="continueAfterVerify" disabled>Continue →</button></div>
+      <h2 class="section-title">Verify Your Email</h2><p class="section-copy">Confirm your email to secure this registration.</p>
+      <div class="verify-box"><div class="verify-icon">✉</div><h3>Check your email</h3><div class="verify-email" id="verifyEmailText">—</div><p class="verify-state" id="verifyState">Open the School Pulse verification email and click Verify Email.</p>
+        <div class="choice-row" style="justify-content:center;margin-top:18px"><button class="auth-btn auth-btn-outline" id="resendVerification">Resend Email</button><button class="auth-btn auth-btn-primary" id="checkVerification">Check Verification</button></div>
+      </div><div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" id="continueAfterVerify" disabled>Continue to Terms →</button></div>
     </section>
 
     <section class="step-section" data-step="5">
-      <h2 class="section-title">Terms & Conditions</h2><p class="section-copy">Please review and accept before submitting the school application.</p>
-      <div class="terms-box"><h4>Terms of Service</h4><p>By registering for School Pulse, you confirm that you are authorised to submit this application on behalf of the institution and that the information provided is accurate. Account access, school activation, subscription entitlements and payment status remain subject to verification and approval by Victorbee Technologies.</p><h4>Privacy</h4><p>School Pulse processes registration information for onboarding, security, support and service delivery. School data must only be handled by authorised users and is subject to the final School Pulse Privacy Policy and Terms of Service.</p></div>
-      <label class="check-row"><input id="acceptTerms" type="checkbox" /> <span>I have read and agree to the <a href="/terms" target="_blank" style="color:#1766bf">Terms of Service</a> and <a href="/privacy" target="_blank" style="color:#1766bf">Privacy Policy</a>.</span></label>
-      <label class="check-row"><input id="marketingOptIn" type="checkbox" /> <span>I agree to receive School Pulse product updates and onboarding information (optional).</span></label>
+      <h2 class="section-title">Terms & Conditions</h2><p class="section-copy">One final step before your application goes into review.</p>
+      <div class="terms-box"><h4>Terms of Service</h4><p>By registering for School Pulse, you confirm that you are authorised to submit this application for the institution and that the information is accurate. Activation and subscription access remain subject to approval by Victorbee Technologies.</p><h4>Privacy</h4><p>Registration information is processed for onboarding, security, support and service delivery.</p></div>
+      <label class="check-row"><input id="acceptTerms" type="checkbox" /> <span>I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a>.</span></label>
+      <label class="check-row"><input id="marketingOptIn" type="checkbox" /> <span>Send me School Pulse product and onboarding updates (optional).</span></label>
       <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-success" id="submitApplication">✓ Submit Application</button></div>
     </section>
-
     <div class="auth-links">Already have an account? <a href="/login">Sign In</a></div><div class="auth-footer">Powered by Victorbee Technologies © 2026</div>
   </div>
 
   <script type="module" is:inline>
     import { auth, functionsBaseUrl } from '/js/firebase-client.js';
-    import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, reload, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-    let currentStep = 0;
-    const state = { authCreated: false, emailVerified: false };
-    const sections = [...document.querySelectorAll('[data-step]')];
-    const indicators = [...document.querySelectorAll('[data-step-indicator]')];
-    const message = document.getElementById('globalMessage');
-    const byId = id => document.getElementById(id);
-    const value = id => (byId(id)?.value || '').trim();
-    const setMessage = (text, type='error') => { message.hidden = !text; message.className = type==='success'?'auth-success':type==='info'?'auth-info':'auth-error'; message.textContent = text || ''; if(text) message.scrollIntoView({behavior:'smooth',block:'center'}); };
-    const normalizePhone = v => /^7\d{8}$/.test(v.replace(/\D/g,'')) ? `256${v.replace(/\D/g,'')}` : null;
-    const showStep = i => { currentStep = Math.max(0,Math.min(5,i)); sections.forEach((s,n)=>s.classList.toggle('active',n===currentStep)); indicators.forEach((s,n)=>{s.classList.toggle('active',n===currentStep);s.classList.toggle('done',n<currentStep);const dot=s.querySelector('.step-dot'); if(dot) dot.textContent=n<currentStep?'✓':String(n+1);}); setMessage(''); window.scrollTo({top:0,behavior:'smooth'}); };
-    const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-    const passwordStrong = v => v.length>=8 && /[A-Z]/.test(v) && /[a-z]/.test(v) && /\d/.test(v) && /[^A-Za-z0-9]/.test(v);
-    const usernameFromEmail = email => email.split('@')[0].replace(/[^a-zA-Z0-9._]/g,'').toLowerCase();
-
-    function validateStep(i){
-      if(i===0){if(!value('schoolName')||!validEmail(value('schoolEmail'))||!normalizePhone(value('schoolPhone'))||!value('schoolCategory')||!value('schoolPrefix')) return 'Complete all required school details and enter a valid Ugandan mobile number.';}
-      if(i===1){if(!value('region')||!value('district')||!value('address')) return 'Region, district and physical address are required.';}
-      if(i===3){if(!value('firstName')||!value('lastName')||!normalizePhone(value('adminPhone'))||!validEmail(value('adminEmail'))) return 'Complete the administrator details with a valid email and Ugandan mobile number.';if(!passwordStrong(value('password'))) return 'Password must have at least 8 characters, an uppercase letter, lowercase letter, number and symbol.';if(value('password')!==value('confirmPassword')) return 'Passwords do not match.';}
-      return null;
-    }
-    document.querySelectorAll('[data-next]').forEach(btn=>btn.addEventListener('click',()=>{const e=validateStep(currentStep);if(e){setMessage(e);return}showStep(currentStep+1)}));
-    document.querySelectorAll('[data-back]').forEach(btn=>btn.addEventListener('click',()=>showStep(currentStep-1)));
-    byId('adminEmail').addEventListener('input',e=>{byId('username').value=usernameFromEmail(e.target.value)});
-    byId('schoolPrefix').addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'')});
-
-    byId('createAccountBtn').addEventListener('click', async()=>{
-      const e=validateStep(3); if(e){setMessage(e);return}
-      const btn=byId('createAccountBtn'); btn.disabled=true; btn.innerHTML='<span class="loading"></span> Creating account…';
-      try{
-        let user=auth.currentUser;
-        if(!user){const cred=await createUserWithEmailAndPassword(auth,value('adminEmail'),value('password'));user=cred.user;await updateProfile(user,{displayName:`${value('firstName')} ${value('lastName')}`});}
-        state.authCreated=true; byId('verifyEmailText').textContent=user.email;
-        if(!user.emailVerified){await sendEmailVerification(user,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});}
-        else state.emailVerified=true;
-        showStep(4); await checkVerification(false);
-      }catch(err){
-        const code=err?.code||''; const friendly=code==='auth/email-already-in-use'?'An account already exists with this email. Please sign in instead.':code==='auth/unauthorized-domain'?'schoolpulse.victorbee.com must be added to Firebase Authentication → Settings → Authorized domains.':code==='auth/operation-not-allowed'?'Email/Password sign-in must be enabled in Firebase Authentication.':(err?.message||'Could not create the account.'); setMessage(friendly);
-      }finally{btn.disabled=false;btn.textContent='Create & Verify Email →'}
-    });
-
-    async function checkVerification(showFeedback=true){
-      const user=auth.currentUser;if(!user){if(showFeedback)setMessage('Your sign-in session expired. Please sign in again.');return false}
-      await reload(user); state.emailVerified=user.emailVerified;
-      byId('continueAfterVerify').disabled=!state.emailVerified;
-      byId('verifyState').textContent=state.emailVerified?'Email verified successfully. You can continue to the final step.':'Open the verification email, click the verification link, then return here and check again.';
-      if(state.emailVerified && showFeedback)setMessage('Email verified successfully.','success');
-      return state.emailVerified;
-    }
-    byId('checkVerification').addEventListener('click',()=>checkVerification(true));
-    byId('resendVerification').addEventListener('click',async()=>{try{if(!auth.currentUser)throw new Error('Please sign in again.');await sendEmailVerification(auth.currentUser,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});setMessage('Verification email sent again. Check your inbox and spam folder.','success')}catch(err){setMessage(err?.message||'Could not resend verification email.')}});
-    byId('continueAfterVerify').addEventListener('click',async()=>{if(await checkVerification(false))showStep(5);else setMessage('Please verify your email first.')});
-
-    function applicationPayload(){return {
-      school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:value('poBox'),prefix:value('schoolPrefix'),motto:value('motto')},
-      location:{region:value('region'),district:value('district'),address:value('address'),website:value('schoolWebsite'),locationName:value('locationName'),latitude:value('latitude'),longitude:value('longitude')},
-      plan:document.querySelector('input[name="plan"]:checked')?.value||'Starter',
-      administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},
-      marketingOptIn:byId('marketingOptIn').checked,
-      termsAccepted:true
-    }};
-    byId('submitApplication').addEventListener('click',async()=>{
-      if(!byId('acceptTerms').checked){setMessage('You must accept the Terms of Service and Privacy Policy to continue.');return}
-      if(!(await checkVerification(false))){setMessage('Your email must be verified before the application can be submitted.');showStep(4);return}
-      const btn=byId('submitApplication');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Submitting…';
-      try{
-        const token=await auth.currentUser.getIdToken(true);
-        const response=await fetch(`${functionsBaseUrl}/submitSchoolApplication`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(applicationPayload())});
-        const result=await response.json().catch(()=>({}));
-        if(!response.ok)throw new Error(result.message||result.error||'Application submission failed.');
-        sessionStorage.removeItem('schoolPulseRegistrationDraft');
-        location.href=`/application-status?status=pending&school=${encodeURIComponent(value('schoolName'))}`;
-      }catch(err){setMessage(err?.message||'Could not submit your application. Please try again.');btn.disabled=false;btn.textContent='✓ Submit Application'}
-    });
-
-    const params=new URLSearchParams(location.search); if(params.get('verified')==='1' && auth.currentUser){showStep(4);setTimeout(()=>checkVerification(true),400)}
-    window.addEventListener('beforeunload',()=>{const draft={schoolName:value('schoolName'),shortName:value('shortName'),schoolEmail:value('schoolEmail'),schoolPhone:value('schoolPhone'),schoolCategory:value('schoolCategory'),poBox:value('poBox'),schoolPrefix:value('schoolPrefix'),motto:value('motto'),region:value('region'),district:value('district'),address:value('address'),schoolWebsite:value('schoolWebsite'),locationName:value('locationName'),latitude:value('latitude'),longitude:value('longitude'),firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),adminPhone:value('adminPhone'),adminEmail:value('adminEmail')};sessionStorage.setItem('schoolPulseRegistrationDraft',JSON.stringify(draft))});
-    try{const draft=JSON.parse(sessionStorage.getItem('schoolPulseRegistrationDraft')||'{}');Object.entries(draft).forEach(([k,v])=>{const el=byId(k);if(el && !el.value)el.value=v});if(byId('adminEmail').value)byId('username').value=usernameFromEmail(byId('adminEmail').value)}catch{}
+    import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    let currentStep=0; const requiredModules=['Students','Attendance','Academics','Administration']; const optionalModules=new Set();
+    const sections=[...document.querySelectorAll('[data-step]')], indicators=[...document.querySelectorAll('[data-step-indicator]')], message=document.getElementById('globalMessage');
+    const byId=id=>document.getElementById(id), value=id=>(byId(id)?.value||'').trim();
+    const selectedModules=()=>[...requiredModules,...optionalModules];
+    const setMessage=(t,type='error')=>{message.hidden=!t;message.className=type==='success'?'auth-success':type==='info'?'auth-info':'auth-error';message.textContent=t||''};
+    const normalizePhone=v=>/^7\d{8}$/.test(v.replace(/\D/g,''))?`256${v.replace(/\D/g,'')}`:null;
+    const validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); const strong=v=>v.length>=8&&/[A-Z]/.test(v)&&/[a-z]/.test(v)&&/\d/.test(v)&&/[^A-Za-z0-9]/.test(v);
+    const showStep=i=>{currentStep=Math.max(0,Math.min(5,i));sections.forEach((s,n)=>s.classList.toggle('active',n===currentStep));indicators.forEach((s,n)=>{s.classList.toggle('active',n===currentStep);s.classList.toggle('done',n<currentStep);const d=s.querySelector('.step-dot');if(d)d.textContent=n<currentStep?'✓':String(n+1)});setMessage('');saveDraft();scrollTo({top:0,behavior:'smooth'})};
+    function validate(i){if(i===0&&(!value('schoolName')||!validEmail(value('schoolEmail'))||!normalizePhone(value('schoolPhone'))||!value('schoolCategory')||!value('schoolPrefix')))return'Complete all required school details.';if(i===1&&(!value('region')||!value('district')||!value('address')))return'Complete the required location details.';if(i===3){if(!value('firstName')||!value('lastName')||!normalizePhone(value('adminPhone'))||!validEmail(value('adminEmail')))return'Complete the administrator details.';if(!strong(value('password')))return'Password needs 8+ characters with uppercase, lowercase, number and symbol.';if(value('password')!==value('confirmPassword'))return'Passwords do not match.'}return null}
+    document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{const e=validate(currentStep);e?setMessage(e):showStep(currentStep+1)}));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));
+    byId('adminEmail').addEventListener('input',e=>byId('username').value=e.target.value.split('@')[0].replace(/[^a-zA-Z0-9._]/g,'').toLowerCase()); byId('schoolPrefix').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''));
+    document.querySelectorAll('.module-chip.selectable').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.module;if(optionalModules.has(m)){optionalModules.delete(m);b.classList.remove('included');b.setAttribute('aria-pressed','false');b.textContent=`+ ${m}`}else{optionalModules.add(m);b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`;saveDraft()}));
+    function payload(){return{school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:value('poBox'),prefix:value('schoolPrefix'),motto:value('motto')},location:{region:value('region'),district:value('district'),address:value('address'),website:value('schoolWebsite'),locationName:value('locationName'),latitude:value('latitude'),longitude:value('longitude')},plan:document.querySelector('input[name="plan"]:checked')?.value||'Starter',selectedModules:selectedModules(),administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},marketingOptIn:byId('marketingOptIn').checked,termsAccepted:true}}
+    function saveDraft(){const ids=['schoolName','shortName','schoolEmail','schoolPhone','schoolCategory','poBox','schoolPrefix','motto','region','district','address','schoolWebsite','locationName','latitude','longitude','firstName','lastName','gender','adminPhone','adminEmail'];const d={step:currentStep,plan:document.querySelector('input[name="plan"]:checked')?.value||'Starter',modules:[...optionalModules]};ids.forEach(id=>d[id]=value(id));localStorage.setItem('schoolPulseRegistrationDraft',JSON.stringify(d))}
+    try{const d=JSON.parse(localStorage.getItem('schoolPulseRegistrationDraft')||'{}');Object.entries(d).forEach(([k,v])=>{const el=byId(k);if(el&&!el.value&&typeof v==='string')el.value=v});(d.modules||[]).forEach(m=>{optionalModules.add(m);const b=document.querySelector(`[data-module="${m}"]`);if(b){b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}});if(d.plan){const r=document.querySelector(`input[name="plan"][value="${d.plan}"]`);if(r)r.checked=true}if(byId('adminEmail').value)byId('username').value=byId('adminEmail').value.split('@')[0].toLowerCase();byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`}catch{}
+    async function saveServerDraft(user){try{const token=await user.getIdToken(true);await fetch(`${functionsBaseUrl}/saveSchoolRegistrationDraft`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(payload())})}catch(e){console.warn('Draft persistence pending backend deploy',e)}}
+    byId('createAccountBtn').addEventListener('click',async()=>{const e=validate(3);if(e){setMessage(e);return}const btn=byId('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Creating account…';try{let user=auth.currentUser;if(!user){const c=await createUserWithEmailAndPassword(auth,value('adminEmail'),value('password'));user=c.user;await updateProfile(user,{displayName:`${value('firstName')} ${value('lastName')}`})}await saveServerDraft(user);byId('verifyEmailText').textContent=user.email;if(!user.emailVerified)await sendEmailVerification(user,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});showStep(4);setMessage('Verification email sent. Check Inbox and Spam.','info')}catch(err){setMessage(err?.code==='auth/email-already-in-use'?'An account already exists with this email. Sign in or use another email.':(err?.message||'Could not create the account.'))}finally{btn.disabled=false;btn.textContent='Create & Verify Email →'}});
+    async function checkVerification(){const user=auth.currentUser;if(!user){setMessage('Sign in again to continue this registration.','info');return false}await reload(user);if(user.emailVerified){byId('continueAfterVerify').disabled=false;byId('verifyState').textContent='Email verified successfully. Continue to the Terms & Conditions step.';await saveServerDraft(user);setMessage('Email verified successfully.','success');return true}setMessage('Email is not verified yet. Open the verification email and click Verify Email.','info');return false}
+    byId('checkVerification').addEventListener('click',checkVerification);byId('resendVerification').addEventListener('click',async()=>{try{await sendEmailVerification(auth.currentUser,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});setMessage('Verification email sent again.','success')}catch(e){setMessage(e?.message||'Could not resend verification email.')}});byId('continueAfterVerify').addEventListener('click',async()=>{if(await checkVerification())showStep(5)});
+    byId('submitApplication').addEventListener('click',async()=>{if(!byId('acceptTerms').checked){setMessage('Accept the Terms of Service and Privacy Policy to continue.');return}if(!(await checkVerification())){showStep(4);return}const btn=byId('submitApplication');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Submitting…';try{const token=await auth.currentUser.getIdToken(true);const body=payload();body.termsAccepted=true;const r=await fetch(`${functionsBaseUrl}/submitSchoolApplication`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(body)});const x=await r.json().catch(()=>({}));if(!r.ok)throw new Error(x.message||x.error||'Application submission failed.');localStorage.removeItem('schoolPulseRegistrationDraft');location.href=`/application-status?status=pending&school=${encodeURIComponent(value('schoolName'))}`}catch(e){setMessage(e?.message||'Could not submit application.');btn.disabled=false;btn.textContent='✓ Submit Application'}});
+    const params=new URLSearchParams(location.search);if(params.get('verified')==='1'){showStep(4);setTimeout(async()=>{if(await checkVerification())setTimeout(()=>showStep(5),900)},500)}
   </script>
 </AuthLayout>

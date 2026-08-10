@@ -1,0 +1,36 @@
+---
+import BrandLogo from './BrandLogo.astro';
+
+interface Props {
+  tone?: 'light' | 'dark';
+  compact?: boolean;
+  centered?: boolean;
+  subtitle?: boolean;
+  class?: string;
+}
+
+const {
+  tone = 'light',
+  compact = false,
+  centered = false,
+  subtitle = true,
+  class: className = '',
+} = Astro.props;
+---
+<a
+  href="/"
+  aria-label="School Pulse home"
+  class:list={[
+    'public-brand-lockup',
+    `public-brand-${tone}`,
+    compact && 'is-compact',
+    centered && 'is-centered',
+    className,
+  ]}
+>
+  <BrandLogo kind="icon" mode={tone === 'dark' ? 'dark' : 'light'} class="public-brand-icon" />
+  <span class="public-brand-copy">
+    <strong>School Pulse</strong>
+    {subtitle && <small>School Management System</small>}
+  </span>
+</a>

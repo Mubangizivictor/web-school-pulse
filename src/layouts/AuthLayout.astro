@@ -1,5 +1,12 @@
 ---
 import '../styles/auth.css';
+import '../styles/branding.css';
+import BrandLogo from '../components/BrandLogo.astro';
+import faviconUrl from '../../favicon.png?url';
+import iconLightUrl from '../../icon_light_Mode.png?url';
+import splashLightUrl from '../../splash_light_mode.png?url';
+import loadingIconUrl from '../../loading_icon.png?url';
+
 const { title = 'School Pulse', asideTitle = 'Everything your school needs, in one place.', asideCopy = 'School Pulse connects every part of school administration — from enrolment to graduation — into one practical platform.' } = Astro.props;
 ---
 <!doctype html>
@@ -8,12 +15,20 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" type="image/png" href={faviconUrl} />
+  <link rel="apple-touch-icon" href={iconLightUrl} />
+  <link rel="manifest" href="/manifest.webmanifest" />
   <title>{title}</title>
 </head>
-<body>
+<body style={`--sp-loading-icon:url("${loadingIconUrl}")`}>
+  <div class="brand-splash brand-splash-light" id="authBrandSplash" aria-hidden="true">
+    <img src={splashLightUrl} alt="" decoding="async" />
+  </div>
   <div class="auth-shell">
     <aside class="auth-aside">
       <div class="auth-aside-inner">
+        <a href="/" aria-label="School Pulse home"><BrandLogo kind="logo" mode="dark" class="auth-aside-brand-logo" /></a>
         <h1>{asideTitle}</h1>
         <p>{asideCopy}</p>
         <div class="auth-benefits">
@@ -26,5 +41,25 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
     </aside>
     <main class="auth-main"><slot /></main>
   </div>
+
+  <script is:inline>
+    (() => {
+      const splash = document.getElementById('authBrandSplash');
+      if (!splash) return;
+      try {
+        if (sessionStorage.getItem('schoolPulseAuthSplashSeen') === '1') {
+          splash.remove();
+          return;
+        }
+      } catch (_) {}
+      window.addEventListener('load', () => {
+        window.setTimeout(() => {
+          splash.classList.add('is-hidden');
+          window.setTimeout(() => splash.remove(), 320);
+          try { sessionStorage.setItem('schoolPulseAuthSplashSeen', '1'); } catch (_) {}
+        }, 220);
+      }, { once: true });
+    })();
+  </script>
 </body>
 </html>

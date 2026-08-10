@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { plans, siteConfig } from '../config/site';
-const pages=['solutions','pricing','why-school-pulse','about','demo','contact','subscribe','privacy','terms','login'];
-export function getStaticPaths(){return pages.map(page=>({params:{page}}));}
+export function getStaticPaths(){return ['solutions','pricing','why-school-pulse','about','demo','contact','subscribe','privacy','terms','login'].map(page=>({params:{page}}));}
 const page=Astro.params.page!;
 const money=(n:number|null)=>n===null?'Custom':`UGX ${n.toLocaleString('en-UG')}`;
 const titles:Record<string,string>={solutions:'Solutions',pricing:'Pricing','why-school-pulse':'Why School Pulse',about:'About School Pulse',demo:'Book a Demo',contact:'Contact Us',subscribe:'Subscribe to School Pulse',privacy:'Privacy Policy',terms:'Terms of Service',login:'Open School Pulse'};

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+export function getStaticPaths(){return ['student-management','attendance','academics','finance','teacher-management','parent-portal','report-cards','boarding','health','library','security','transport','stores-assets','catering','messaging','administration'].map(slug=>({params:{slug}}));}
 const items = {
   'student-management':['Student Management','Manage admissions, student profiles, lifecycle, documents and the core student record.',['Admissions workflow','Student profiles and documents','Class and stream assignment','Lifecycle status management']],
   attendance:['Attendance','Flexible attendance designed for real school operations.',['QR and manual attendance','NFC-ready premium workflows','Automatic timestamps','Role-based student lists','Class, subject, boarding, gate and transport attendance']],
@@ -18,7 +19,6 @@ const items = {
   messaging:['Messaging','Operational communication built around school roles.',['Role-aware messaging','Notifications','Department communication','Offline-aware delivery patterns']],
   administration:['Administration','Configure the institution and control who can do what.',['School structure','Staff and roles','Permissions','Reporting and audit visibility']]
 };
-export function getStaticPaths(){return Object.keys(items).map(slug=>({params:{slug}}));}
 const data = items[Astro.params.slug as keyof typeof items];
 if(!data) return Astro.redirect('/features');
 const [name,desc,capabilities]=data;

@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getStorage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyCvVUyX1_3tuxHlhS3rdCruV08_FISvIG8',
@@ -12,6 +13,7 @@ export const firebaseConfig = {
 
 export const firebaseApp = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(firebaseApp);
+export const storage = getStorage(firebaseApp);
 auth.useDeviceLanguage();
 
 export const functionsBaseUrl = 'https://europe-west1-school-pulse-3d95b.cloudfunctions.net';

@@ -1,11 +1,14 @@
 import { randomUUID } from 'node:crypto';
 import { initializeApp } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { onRequest } from 'firebase-functions/v2/https';
 
 initializeApp();
 const db = getFirestore();
 const WEBSITE_ORIGIN = 'https://schoolpulse.victorbee.com';
+const APP_URL = 'https://app.schoolpulse.victorbee.com';
+const ALLOWED_PLANS = ['Starter', 'Growth', 'Pro', 'Enterprise'];
 
 function cors(req: any, res: any) {
   const origin = req.get('origin');
@@ -14,7 +17,7 @@ function cors(req: any, res: any) {
   }
   res.set('Vary', 'Origin');
   res.set('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type,X-Firebase-AppCheck');
+  res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Firebase-AppCheck');
   if (req.method === 'OPTIONS') { res.status(204).send(''); return true; }
   return false;
 }
@@ -41,6 +44,18 @@ async function rateLimit(req: any, bucket: string, limit = 8) {
     tx.set(ref, { count: count + 1, updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     return true;
   });
+}
+
+async function verifiedIdentity(req: any) {
+  const header = text(req.get('authorization'), 5000);
+  if (!header.startsWith('Bearer ')) return null;
+  try {
+    const decoded = await getAuth().verifyIdToken(header.slice(7));
+    if (!decoded.uid || !decoded.email || !decoded.email_verified) return null;
+    return decoded;
+  } catch {
+    return null;
+  }
 }
 
 export const submitDemoRequest = onRequest({ region: 'europe-west1' }, async (req, res) => {
@@ -72,6 +87,104 @@ export const submitContactRequest = onRequest({ region: 'europe-west1' }, async 
   const id = randomUUID();
   await db.collection('public_contact_requests').doc(id).set({ id, name, phone, email: text(req.body?.email, 160), message, status: 'new', source: 'public_website', createdAt: FieldValue.serverTimestamp() });
   res.status(201).json({ ok: true, id });
+});
+
+export const submitSchoolApplication = onRequest({ region: 'europe-west1' }, async (req, res) => {
+  if (cors(req, res)) return;
+  if (req.method !== 'POST') { res.status(405).json({ error: 'method_not_allowed' }); return; }
+  if (!(await rateLimit(req, 'school_application', 5))) { res.status(429).json({ error: 'too_many_requests' }); return; }
+  const identity = await verifiedIdentity(req);
+  if (!identity) { res.status(401).json({ error: 'verified_auth_required', message: 'A verified School Pulse account is required.' }); return; }
+
+  const school = req.body?.school ?? {};
+  const location = req.body?.location ?? {};
+  const administrator = req.body?.administrator ?? {};
+  const plan = text(req.body?.plan, 40);
+  const schoolName = text(school.name, 160);
+  const schoolEmail = text(school.email, 160).toLowerCase();
+  const schoolPhone = normalizePhone(school.phone);
+  const prefix = text(school.prefix, 12).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const adminEmail = text(administrator.email, 160).toLowerCase();
+  const adminPhone = normalizePhone(administrator.phone);
+
+  if (!schoolName || !schoolEmail || !schoolPhone || !prefix || !text(school.category, 80) || !text(location.region, 40) || !text(location.district, 100) || !text(location.address, 240) || !text(administrator.firstName, 100) || !text(administrator.lastName, 100) || !adminPhone || adminEmail !== String(identity.email).toLowerCase() || !ALLOWED_PLANS.includes(plan) || req.body?.termsAccepted !== true) {
+    res.status(400).json({ error: 'invalid_application', message: 'Required registration information is missing or invalid.' }); return;
+  }
+
+  const ref = db.collection('public_school_applications').doc(identity.uid);
+  const existing = await ref.get();
+  if (existing.exists && ['approved', 'pending_review'].includes(String(existing.data()?.status ?? ''))) {
+    res.status(409).json({ error: 'application_exists', message: 'A school application already exists for this account.' }); return;
+  }
+
+  const prefixMatch = await db.collection('public_school_applications').where('school.prefix', '==', prefix).limit(1).get();
+  if (!prefixMatch.empty && prefixMatch.docs[0].id !== identity.uid) {
+    res.status(409).json({ error: 'prefix_in_use', message: 'That school prefix is already in use. Choose another.' }); return;
+  }
+
+  await ref.set({
+    id: identity.uid,
+    authUid: identity.uid,
+    status: 'pending_review',
+    source: 'public_website',
+    plan,
+    school: {
+      name: schoolName,
+      shortName: text(school.shortName, 40),
+      email: schoolEmail,
+      phone: schoolPhone,
+      category: text(school.category, 80),
+      poBox: text(school.poBox, 80),
+      prefix,
+      motto: text(school.motto, 180),
+    },
+    location: {
+      region: text(location.region, 40),
+      district: text(location.district, 100),
+      address: text(location.address, 240),
+      website: text(location.website, 240),
+      locationName: text(location.locationName, 140),
+      latitude: text(location.latitude, 40),
+      longitude: text(location.longitude, 40),
+    },
+    administrator: {
+      firstName: text(administrator.firstName, 100),
+      lastName: text(administrator.lastName, 100),
+      gender: text(administrator.gender, 40),
+      phone: adminPhone,
+      email: adminEmail,
+      username: text(administrator.username, 120),
+      emailVerified: true,
+    },
+    marketingOptIn: req.body?.marketingOptIn === true,
+    termsAccepted: true,
+    termsAcceptedAt: FieldValue.serverTimestamp(),
+    createdAt: existing.exists ? existing.data()?.createdAt ?? FieldValue.serverTimestamp() : FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
+    reviewedAt: null,
+    reviewedBy: null,
+  }, { merge: true });
+
+  res.status(201).json({ ok: true, applicationId: identity.uid, status: 'pending_review', schoolName });
+});
+
+export const getSchoolApplicationStatus = onRequest({ region: 'europe-west1' }, async (req, res) => {
+  if (cors(req, res)) return;
+  if (!['GET', 'POST'].includes(req.method)) { res.status(405).json({ error: 'method_not_allowed' }); return; }
+  const identity = await verifiedIdentity(req);
+  if (!identity) { res.status(401).json({ error: 'verified_auth_required' }); return; }
+  const ref = db.collection('public_school_applications').doc(identity.uid);
+  const snap = await ref.get();
+  if (!snap.exists) { res.status(404).json({ error: 'application_not_found' }); return; }
+  const data = snap.data()!;
+  await ref.set({ lastStatusCheckAt: FieldValue.serverTimestamp() }, { merge: true });
+  res.status(200).json({
+    status: text(data.status, 40),
+    schoolName: text(data.school?.name, 160),
+    plan: text(data.plan, 40),
+    appReady: false,
+    appUrl: APP_URL,
+  });
 });
 
 export const createSubscriptionCheckout = onRequest({ region: 'europe-west1' }, async (req, res) => {

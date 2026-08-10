@@ -1,16 +1,65 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { modules, plans, siteConfig } from '../config/site';
+import { modules, plans } from '../config/site';
 const money=(n:number|null)=>n===null?'Custom':`UGX ${n.toLocaleString('en-UG')}`;
 ---
-<BaseLayout title="School Pulse — Run Your Entire School From One Platform">
-  <section class="hero"><div class="container hero-grid">
-    <div><span class="eyebrow">School Management, Simplified</span><h1>Run Your Entire School From One Platform.</h1><p class="lead">School Pulse brings students, attendance, academics, finance, boarding, health, communication, security, transport and school operations into one secure platform built for modern African schools.</p><div class="cta-row"><a class="btn btn-primary" href="/demo">Book a Demo →</a><a class="btn btn-secondary" href="/features">Explore Features</a><a class="btn" href={siteConfig.appUrl}>Open School Pulse</a></div></div>
-    <div class="mockup" aria-label="School Pulse dashboard preview placeholder"><div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="dashboard"><aside class="side"><div class="side-line"></div><div class="side-line"></div><div class="side-line"></div><div class="side-line"></div><div class="side-line"></div></aside><div class="content"><div class="stat-grid"><div class="stat"><small class="muted">Students</small><strong>1,284</strong></div><div class="stat"><small class="muted">Attendance</small><strong>94%</strong></div><div class="stat"><small class="muted">Active Staff</small><strong>64</strong></div></div><div class="charts"><div class="chart"><span class="eyebrow">Weekly attendance</span><div class="chart-line" style="margin-top:30px;width:85%"></div><div class="chart-line" style="width:65%"></div><div class="chart-line" style="width:92%"></div><div class="chart-line" style="width:74%"></div></div><div class="chart"><span class="eyebrow">Operations</span><div class="chart-line" style="margin-top:30px"></div><div class="chart-line" style="width:72%"></div><div class="chart-line" style="width:88%"></div></div></div></div></div></div>
-  </div></section>
-  <div class="trust"><div class="container">Built for African schools · Mobile-first · Offline-aware · Multi-role · Secure · Cloud-connected</div></div>
-  <section class="section"><div class="container"><div class="section-head"><span class="eyebrow">What we offer</span><h2>Everything Your School Needs</h2><p>Connected tools for the people who run, teach, support and manage your institution.</p></div><div class="grid">{modules.slice(0,12).map(([name,desc],i)=><a class="card" href="/features"><div class="icon">{String(i+1).padStart(2,'0')}</div><h3>{name}</h3><p class="muted">{desc}</p><span class="eyebrow">Learn more →</span></a>)}</div></div></section>
-  <section class="section alt"><div class="container split"><div><span class="eyebrow">Built for real operations</span><h2>Designed for how schools actually work.</h2><p class="lead">Mobile-first workflows, low-data considerations, configurable structures and role-based access help School Pulse adapt to different institutions without forcing one rigid model.</p><div class="feature-list">{['Day and boarding school workflows','Multiple staff roles on one account','QR and manual attendance with NFC-ready options','Term-based and configurable academic structures','Simple gate and security workflows'].map(x=><div class="feature-item"><span class="check">✓</span><span>{x}</span></div>)}</div></div><div class="card"><span class="eyebrow">Role-based workspace</span><h3>One account. The right tools for each responsibility.</h3><p class="muted">A teacher can also be a class teacher, subject teacher, patron, coach or administrator. School Pulse presents the correct workspace according to assigned permissions.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:20px">{['Admin','Teacher','Bursar','Nurse','Security','Director'].map(x=><div class="card" style="padding:14px">{x}</div>)}</div></div></div></section>
-  <section class="section"><div class="container"><div class="section-head"><span class="eyebrow">Pricing</span><h2>Clear plans for growing schools</h2><p>Start termly. Annual billing can be offered with configured savings.</p></div><div class="pricing">{plans.map(p=><div class:list={['card','price-card',p.recommended&&'recommended']}><span class="badge" style={p.recommended?'':'display:none'}>Recommended</span><h3>{p.name}</h3><div class="price">{money(p.price)}</div><p class="muted">{p.price?`per ${p.cycle.toLowerCase()}`:'Talk to us'}</p><p>{p.range}</p><a class="btn btn-primary" href={p.price?'/subscribe':'/contact'}>{p.price?'Choose Plan':'Contact Us'}</a></div>)}</div><div class="cta-row" style="justify-content:center"><a class="btn btn-secondary" href="/pricing">Compare plans</a></div></div></section>
-  <section class="section alt"><div class="container section-head"><span class="eyebrow">Ready?</span><h2>Ready to modernize your school?</h2><p>Book a School Pulse demo and see how the platform can fit your school.</p><div class="cta-row" style="justify-content:center"><a class="btn btn-primary" href="/demo">Book Demo</a><a class="btn btn-secondary" href="/pricing">View Pricing</a></div></div></section>
+<BaseLayout title="School Pulse — School Management, Simplified">
+  <section class="hero hero-reference">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <h1>School Management,<br/>Simplified.</h1>
+        <p class="lead">Streamline academics, finances, attendance and administration with an all-in-one school platform built for Uganda and modern African schools.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/demo">Book a Demo <span aria-hidden="true">→</span></a>
+          <a class="btn btn-secondary" href="/features">Explore School Pulse Features</a>
+        </div>
+      </div>
+
+      <div class="product-shot" aria-label="School Pulse dashboard preview placeholder">
+        <div class="product-window">
+          <div class="product-bar">
+            <div class="mini-brand"><span class="mini-mark">SP</span><span><b>Demo High School</b><small>School Pulse</small></span></div>
+            <div class="product-user"><span class="status-dot"></span><small>Online</small><span class="avatar">A</span></div>
+          </div>
+          <div class="product-body">
+            <aside class="product-sidebar">
+              <span class="side-active">⌂</span><span>◫</span><span>✓</span><span>▥</span><span>◎</span><span>◇</span><span>⚙</span>
+            </aside>
+            <div class="product-main">
+              <div class="dash-heading"><div><b>Dashboard</b><small>Welcome back. Here’s today’s school overview.</small></div><button>Current Term</button></div>
+              <div class="stat-row">
+                <div class="dash-stat"><small>Total Students</small><strong>1,284</strong><em>+4.2% this term</em></div>
+                <div class="dash-stat"><small>Active Staff</small><strong>64</strong><em>62 present</em></div>
+                <div class="dash-stat"><small>Attendance</small><strong>94.6%</strong><em>Today</em></div>
+                <div class="dash-stat"><small>Collections</small><strong>UGX 48.2M</strong><em>Current term</em></div>
+              </div>
+              <div class="dashboard-grid">
+                <div class="dash-panel wide"><div class="panel-title"><b>Financial Overview</b><span>This term</span></div><div class="bars"><i style="height:42%"></i><i style="height:72%"></i><i style="height:58%"></i><i style="height:84%"></i><i style="height:66%"></i><i style="height:91%"></i><i style="height:76%"></i></div></div>
+                <div class="dash-panel"><div class="panel-title"><b>Enrollment Trend</b><span>12 months</span></div><svg class="spark" viewBox="0 0 220 90" aria-hidden="true"><polyline points="0,80 35,69 67,63 98,49 130,47 165,30 220,14" fill="none" stroke="currentColor" stroke-width="4"/><circle cx="220" cy="14" r="5" fill="currentColor"/></svg></div>
+                <div class="dash-panel"><div class="panel-title"><b>Staff by Department</b><span>Active</span></div><div class="dept"><span>Teaching</span><b>38</b></div><div class="dept"><span>Admin</span><b>12</b></div><div class="dept"><span>Support</span><b>14</b></div></div>
+                <div class="dash-panel"><div class="panel-title"><b>Weekly Attendance</b><span>Students</span></div><div class="mini-bars"><i style="height:70%"></i><i style="height:80%"></i><i style="height:63%"></i><i style="height:88%"></i><i style="height:78%"></i></div></div>
+                <div class="dash-panel"><div class="panel-title"><b>Students by Level</b><span>Distribution</span></div><div class="donut"></div></div>
+                <div class="dash-panel"><div class="panel-title"><b>Upcoming</b><span>This week</span></div><div class="event-line"><span>Staff Meeting</span><small>Mon</small></div><div class="event-line"><span>Assessment</span><small>Wed</small></div><div class="event-line"><span>Visitors</span><small>Fri</small></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trust"><div class="container">Built for schools in Uganda and across Africa — mobile-first, role-aware and designed for real school operations.</div></div>
+
+  <section class="section offer-section">
+    <div class="container">
+      <div class="section-head compact-head"><span class="eyebrow">What we offer</span><h2>Everything Your School Needs</h2><p>Comprehensive tools to manage every part of your institution — from admissions to report cards.</p></div>
+      <div class="grid feature-grid">{modules.slice(0,12).map(([name,desc],i)=><a class="card feature-card" href="/features"><div class="icon">{String(i+1).padStart(2,'0')}</div><h3>{name}</h3><p class="muted">{desc}</p><span class="learn">Learn more →</span></a>)}</div>
+    </div>
+  </section>
+
+  <section class="section alt"><div class="container split"><div><span class="eyebrow">Built for real operations</span><h2>Designed around how schools actually work.</h2><p class="lead">Mobile-first workflows, low-data considerations, configurable structures and role-based access help School Pulse adapt to different institutions without forcing one rigid model.</p><div class="feature-list">{['Day and boarding school workflows','Multiple staff roles on one account','QR and manual attendance with NFC-ready options','Term-based and configurable academic structures','Simple gate and security workflows'].map(x=><div class="feature-item"><span class="check">✓</span><span>{x}</span></div>)}</div></div><div class="card role-card"><span class="eyebrow">Role-based workspace</span><h3>One account. The right tools for each responsibility.</h3><p class="muted">Teachers and staff can hold multiple responsibilities while School Pulse shows the correct tools and permissions for each role.</p><div class="role-grid">{['Admin','Teacher','Bursar','Nurse','Security','Director'].map(x=><div>{x}</div>)}</div></div></div></section>
+
+  <section class="section"><div class="container"><div class="section-head"><span class="eyebrow">Pricing</span><h2>Clear plans for growing schools</h2><p>Flexible term-based packages with room to scale as your school grows.</p></div><div class="pricing">{plans.map(p=><div class:list={['card','price-card',p.recommended&&'recommended']}><span class="badge" style={p.recommended?'':'display:none'}>Recommended</span><h3>{p.name}</h3><div class="price">{money(p.price)}</div><p class="muted">{p.price?`per ${p.cycle.toLowerCase()}`:'Talk to us'}</p><p>{p.range}</p><a class="btn btn-primary" href={p.price?'/subscribe':'/contact'}>{p.price?'Choose Plan':'Contact Us'}</a></div>)}</div><div class="cta-row center"><a class="btn btn-secondary" href="/pricing">Compare plans</a></div></div></section>
+
+  <section class="section alt"><div class="container section-head"><span class="eyebrow">Ready?</span><h2>Ready to modernize your school?</h2><p>Book a School Pulse demo and see how the platform can fit your school.</p><div class="cta-row center"><a class="btn btn-primary" href="/demo">Book Demo</a><a class="btn btn-secondary" href="/pricing">View Pricing</a></div></div></section>
 </BaseLayout>

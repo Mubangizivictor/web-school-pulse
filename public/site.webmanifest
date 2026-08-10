@@ -1,0 +1,9 @@
+{
+  "name": "School Pulse",
+  "short_name": "School Pulse",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070b12",
+  "theme_color": "#070b12",
+  "description": "School management platform by Victorbee Technologies"
+}

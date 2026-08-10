@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const items = {
+  'student-management':['Student Management','Manage admissions, student profiles, lifecycle, documents and the core student record.',['Admissions workflow','Student profiles and documents','Class and stream assignment','Lifecycle status management']],
+  attendance:['Attendance','Flexible attendance designed for real school operations.',['QR and manual attendance','NFC-ready premium workflows','Automatic timestamps','Role-based student lists','Class, subject, boarding, gate and transport attendance']],
+  academics:['Academics','Connect structure, classes, subjects, marks, reports and academic oversight.',['Configurable academic structure','Assessment and marks workflows','Teacher assignments','Academic reporting']],
+  finance:['Finance','Give bursars and school leaders a clearer financial operating picture.',['Student fee accounts','Collections and receipts','Expenditure workflows','Approvals and reporting']],
+  'teacher-management':['Teacher Management','Give class and subject teachers focused workspaces based on assignments.',['Multi-role staff accounts','Class teacher workflows','Subject teacher workflows','Permission-aware student access']],
+  'parent-portal':['Parent Portal','A secure parent experience for permitted student information.',['Attendance visibility','Academic reports','Notifications','School communication','Permitted financial status']],
+  'report-cards':['Report Cards','Turn entered marks into structured school reports.',['Configurable grading','A4-ready reports','Teacher remarks','Secure parent/student access']],
+  boarding:['Boarding','Coordinate dormitory operations, welfare and roll calls.',['Dormitories and beds','Morning/evening roll call','Leave requests','Welfare and discipline']],
+  health:['Health','Support the school clinic with structured health records.',['Clinic visits','Medication records','Emergencies','Allergies and chronic conditions']],
+  library:['Library','Manage borrowing and school library operations.',['Borrowing and returns','Policies and limits','Fines/lost items','Student and staff integration']],
+  security:['Security & Visitors','Simple, fast gate workflows for security teams.',['Visitor entry and exit','Automatic timestamps','Appointments','Low-complexity guard workflows']],
+  transport:['Transport','Coordinate vehicles, routes, stops and student boarding.',['Routes and stops','Bus assignments','Boarding verification','Trip operations']],
+  'stores-assets':['Stores & Assets','Manage procurement, inventory, assets and maintenance.',['Purchase requests','Stock movements','Asset register','Repairs and maintenance']],
+  catering:['Catering','Connect meal planning, kitchen operations and stock coordination.',['Meal planning','Eligibility workflows','Consumption tracking','Store and bursar coordination']],
+  messaging:['Messaging','Operational communication built around school roles.',['Role-aware messaging','Notifications','Department communication','Offline-aware delivery patterns']],
+  administration:['Administration','Configure the institution and control who can do what.',['School structure','Staff and roles','Permissions','Reporting and audit visibility']]
+};
+export function getStaticPaths(){return Object.keys(items).map(slug=>({params:{slug}}));}
+const data = items[Astro.params.slug as keyof typeof items];
+if(!data) return Astro.redirect('/features');
+const [name,desc,capabilities]=data;
+---
+<BaseLayout title={`${name} — School Pulse`} description={desc}>
+<section class="page-hero"><div class="container"><span class="eyebrow">School Pulse Feature</span><h1>{name}</h1><p class="lead" style="margin-inline:auto">{desc}</p><div class="cta-row" style="justify-content:center"><a class="btn btn-primary" href="/demo">Book Demo</a><a class="btn btn-secondary" href="/pricing">View Pricing</a></div></div></section>
+<section class="section"><div class="container split"><div><span class="eyebrow">The problem</span><h2>Replace disconnected workflows with one operational view.</h2><p class="lead">School Pulse keeps this module connected to the same school identity, structure and permissions used across the platform.</p><div class="feature-list">{capabilities.map(x=><div class="feature-item"><span class="check">✓</span><span>{x}</span></div>)}</div></div><div class="mockup"><div class="mock-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div><div class="card" style="min-height:320px"><span class="eyebrow">Product screenshot placeholder</span><h3>{name} workspace</h3><p class="muted">Real School Pulse product screenshots will replace this placeholder while preserving the page layout.</p></div></div></div></section>
+<section class="section alt"><div class="container"><div class="section-head"><span class="eyebrow">Workflow</span><h2>Built around responsibility, not clutter.</h2><p>Users see the tools and records permitted by their assigned role. Other modules stay connected through shared services and school-scoped data.</p></div></div></section>
+</BaseLayout>

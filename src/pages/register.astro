@@ -30,21 +30,58 @@ import PublicBrand from '../components/PublicBrand.astro';
 
     <section class="step-section" data-step="1">
       <h2 class="section-title">School Location</h2>
-      <p class="section-copy">Search one Uganda location. District, region and country are filled automatically.</p>
+      <p class="section-copy">Search for your school location. We'll automatically identify the district and region.</p>
       <div class="location-search-card">
         <div class="form-field full">
-          <label for="locationSearch">Town, area or district *</label>
-          <input id="locationSearch" list="ugandaPlaces" autocomplete="off" placeholder="Start typing, e.g. Booma, Mbarara, Kampala" />
-          <datalist id="ugandaPlaces"></datalist>
-          <span class="hint">Choose a matching Uganda location from the suggestions.</span>
+          <label for="locationSearch">Town, village, suburb or area *</label>
+          <div class="location-input-wrap" id="locationInputWrap">
+            <span class="location-input-icon">🔍</span>
+            <input
+              id="locationSearch"
+              type="text"
+              autocomplete="off"
+              spellcheck="false"
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="locationListbox"
+              aria-autocomplete="list"
+              placeholder="Start typing your school location"
+            />
+            <button type="button" id="useCurrentLocationBtn" class="location-geo-btn" title="Use my current location" aria-label="Use my current location">📍</button>
+            <div id="locationSpinner" class="location-spinner" hidden></div>
+            <div id="locationDropdown" class="location-dropdown" hidden>
+              <ul id="locationListbox" role="listbox"></ul>
+            </div>
+          </div>
+          <span class="hint" id="locationHint">Choose a matching Uganda location from the suggestions.</span>
         </div>
+
         <div id="locationResult" class="location-result" hidden>
           <span class="location-pin">⌖</span>
           <div><strong id="locationResultName">—</strong><small id="locationResultMeta">—</small></div>
-          <span class="location-ok">✓</span>
+          <button type="button" class="location-change-btn" id="locationChangeBtn">Change</button>
+        </div>
+
+        <button type="button" class="location-manual-toggle" id="manualLocationToggle">Can't find your location?</button>
+        <div class="location-manual-form" id="manualLocationForm" hidden>
+          <div class="form-grid">
+            <div class="form-field"><label for="manualArea">Area / village *</label><input id="manualArea" maxlength="140" placeholder="e.g. Kanyanya" /></div>
+            <div class="form-field"><label for="manualDistrict">District *</label><input id="manualDistrict" maxlength="100" placeholder="e.g. Kampala" /></div>
+            <div class="form-field"><label for="manualRegion">Region *</label>
+              <select id="manualRegion">
+                <option value="">Select region</option>
+                <option>Central</option>
+                <option>Eastern</option>
+                <option>Northern</option>
+                <option>Western</option>
+              </select>
+            </div>
+            <div class="form-field"><label for="manualCountry">Country</label><input id="manualCountry" value="Uganda" disabled /></div>
+          </div>
+          <div class="form-actions right"><button type="button" class="auth-btn auth-btn-outline" id="useManualLocationBtn">Use this location</button></div>
         </div>
       </div>
-      <input id="region" type="hidden" /><input id="district" type="hidden" /><input id="address" type="hidden" /><input id="locationName" type="hidden" /><input id="country" type="hidden" value="Uganda" /><input id="schoolWebsite" type="hidden" /><input id="latitude" type="hidden" /><input id="longitude" type="hidden" />
+      <input id="region" type="hidden" /><input id="district" type="hidden" /><input id="address" type="hidden" /><input id="locationName" type="hidden" /><input id="area" type="hidden" /><input id="town" type="hidden" /><input id="city" type="hidden" /><input id="country" type="hidden" value="Uganda" /><input id="schoolWebsite" type="hidden" /><input id="latitude" type="hidden" /><input id="longitude" type="hidden" /><input id="locationSource" type="hidden" />
       <div class="form-actions"><button class="auth-btn auth-btn-outline" data-back>← Back</button><button class="auth-btn auth-btn-primary" data-next>Next →</button></div>
     </section>
 
@@ -112,7 +149,22 @@ import PublicBrand from '../components/PublicBrand.astro';
   </div>
 
   <style is:inline>
-    [hidden]{display:none!important}.registration-brand{margin-bottom:22px}.location-search-card{border:1px solid #e0e7f0;border-radius:18px;background:#fbfcfe;padding:20px}.location-result{margin-top:14px;border:1px solid #bfe5cf;background:#effaf4;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px}.location-pin{width:34px;height:34px;border-radius:10px;background:#fff;color:#267750;display:grid;place-items:center;font-weight:900}.location-result div{display:grid;gap:3px;flex:1}.location-result strong{font-size:14px;color:#1d382b}.location-result small{font-size:11px;color:#647a6e}.location-ok{color:#16965a;font-weight:900}.plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}.plan-card{position:relative;display:flex;flex-direction:column;gap:5px;border:1px solid #d7e0ec;border-radius:14px;padding:16px;background:#fff;cursor:pointer;transition:.18s ease;min-height:155px}.plan-card:hover{border-color:#2f7df4;box-shadow:0 6px 18px rgba(32,90,160,.09)}.plan-card:has(input:checked){border:2px solid #2877ed;background:#f5f9ff;padding:15px;box-shadow:0 6px 18px rgba(40,119,237,.12)}.plan-card input{position:absolute;opacity:0;pointer-events:none}.plan-name{font-size:16px;font-weight:800;color:#15223a}.plan-price{font-size:19px;font-weight:800;color:#1769d2;margin-top:3px}.plan-cycle,.plan-capacity{font-size:12px;color:#74839a;line-height:1.45}.plan-select{margin-top:auto;font-size:12px;font-weight:700;color:#1769d2}.plan-card.recommended:before{content:'Recommended';position:absolute;top:10px;right:10px;padding:4px 8px;border-radius:999px;background:#e8f7ee;color:#13834e;font-size:10px;font-weight:800}.plan-card.over-capacity{opacity:.55}.plan-card.over-capacity .plan-select{color:#b24d4d}.plan-recommendation-good{color:#13834e!important;font-weight:700}.field-message{font-size:11px;margin-top:6px;line-height:1.35}.field-message.error{color:#b42318}.field-message.success{color:#16824e}.field-message.info{color:#65758b}.field-invalid{border-color:#e07168!important}.field-valid{border-color:#72be93!important}.password-assistant{margin-top:8px}.password-meter{height:4px;background:#e7ecf2;border-radius:999px;overflow:hidden}.password-meter span{display:block;height:100%;width:0;background:#2b78ef;transition:.2s}.password-rules{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.password-rules span{font-size:9px;color:#8793a4;border:1px solid #e1e6ec;border-radius:999px;padding:3px 6px}.password-rules span.ok{color:#16824e;border-color:#b6dfc8;background:#f1fbf5}.password-generate{margin-top:8px;border:0;background:transparent;color:#286fda;font-size:11px;font-weight:750;padding:0;cursor:pointer}@media(max-width:680px){.plan-grid{grid-template-columns:1fr}.location-search-card{padding:15px}}
+    [hidden]{display:none!important}.registration-brand{margin-bottom:22px}.location-search-card{border:1px solid #e0e7f0;border-radius:18px;background:#fbfcfe;padding:20px;position:relative}.location-input-wrap{position:relative;display:flex;align-items:center}.location-input-icon{position:absolute;left:14px;font-size:14px;opacity:.6;pointer-events:none}.location-input-wrap input#locationSearch{width:100%;padding:12px 76px 12px 38px;border:1px solid #d7e0ec;border-radius:12px;font-size:14px;background:#fff}.location-input-wrap input#locationSearch:focus{outline:none;border-color:#2f7df4;box-shadow:0 0 0 3px rgba(47,125,244,.12)}.location-geo-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:9px;border:1px solid #d7e0ec;background:#fff;cursor:pointer;font-size:15px;display:grid;place-items:center;transition:.15s ease}.location-geo-btn:hover{border-color:#2f7df4;background:#f2f7ff}.location-geo-btn[aria-busy="true"]{opacity:.55;pointer-events:none}.location-spinner{position:absolute;right:50px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;border:2px solid #d7e0ec;border-top-color:#2f7df4;animation:location-spin .7s linear infinite}@keyframes location-spin{to{transform:translateY(-50%) rotate(360deg)}}
+    .location-dropdown{position:absolute;top:calc(100% + 6px);left:0;width:100%;max-height:300px;overflow-y:auto;background:#fff;border:1px solid #e2e8f2;border-radius:13px;box-shadow:0 14px 32px rgba(15,35,80,.14);z-index:40}
+    .location-dropdown ul{list-style:none;margin:0;padding:6px}
+    .location-option{padding:10px 12px;border-radius:9px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+    .location-option + .location-option{border-top:1px solid #f0f3f8;margin-top:1px;padding-top:11px}
+    .location-option:hover,.location-option.active{background:#f2f7ff}
+    .location-option-name{font-size:13.5px;font-weight:700;color:#16233f}
+    .location-option-meta{font-size:11.5px;color:#6a7890}
+    .location-dropdown .location-empty,.location-dropdown .location-error{padding:14px 12px;font-size:12.5px;color:#6a7890;text-align:center}
+    .location-dropdown .location-error{color:#b42318}
+    .location-dropdown .location-fallback-link{display:block;margin-top:8px;background:none;border:0;color:#2877ed;font-weight:700;font-size:12.5px;cursor:pointer;text-align:center;width:100%}
+    .location-result{margin-top:14px;border:1px solid #bfe5cf;background:#effaf4;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px}.location-pin{width:34px;height:34px;border-radius:10px;background:#fff;color:#267750;display:grid;place-items:center;font-weight:900;flex-shrink:0}.location-result div{display:grid;gap:3px;flex:1}.location-result strong{font-size:14px;color:#1d382b}.location-result small{font-size:11px;color:#647a6e}.location-change-btn{background:none;border:1px solid #bfe5cf;color:#267750;font-weight:700;font-size:11.5px;border-radius:8px;padding:6px 10px;cursor:pointer}.location-change-btn:hover{background:#fff}
+    .location-manual-toggle{margin-top:12px;background:none;border:0;color:#2877ed;font-weight:700;font-size:12.5px;cursor:pointer;padding:0}
+    .location-manual-form{margin-top:12px;padding-top:14px;border-top:1px dashed #d7e0ec}
+    @media(max-width:680px){.location-dropdown{max-height:260px}}
+    .plan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:10px}.plan-card{position:relative;display:flex;flex-direction:column;gap:5px;border:1px solid #d7e0ec;border-radius:14px;padding:16px;background:#fff;cursor:pointer;transition:.18s ease;min-height:155px}.plan-card:hover{border-color:#2f7df4;box-shadow:0 6px 18px rgba(32,90,160,.09)}.plan-card:has(input:checked){border:2px solid #2877ed;background:#f5f9ff;padding:15px;box-shadow:0 6px 18px rgba(40,119,237,.12)}.plan-card input{position:absolute;opacity:0;pointer-events:none}.plan-name{font-size:16px;font-weight:800;color:#15223a}.plan-price{font-size:19px;font-weight:800;color:#1769d2;margin-top:3px}.plan-cycle,.plan-capacity{font-size:12px;color:#74839a;line-height:1.45}.plan-select{margin-top:auto;font-size:12px;font-weight:700;color:#1769d2}.plan-card.recommended:before{content:'Recommended';position:absolute;top:10px;right:10px;padding:4px 8px;border-radius:999px;background:#e8f7ee;color:#13834e;font-size:10px;font-weight:800}.plan-card.over-capacity{opacity:.55}.plan-card.over-capacity .plan-select{color:#b24d4d}.plan-recommendation-good{color:#13834e!important;font-weight:700}.field-message{font-size:11px;margin-top:6px;line-height:1.35}.field-message.error{color:#b42318}.field-message.success{color:#16824e}.field-message.info{color:#65758b}.field-invalid{border-color:#e07168!important}.field-valid{border-color:#72be93!important}.password-assistant{margin-top:8px}.password-meter{height:4px;background:#e7ecf2;border-radius:999px;overflow:hidden}.password-meter span{display:block;height:100%;width:0;background:#2b78ef;transition:.2s}.password-rules{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.password-rules span{font-size:9px;color:#8793a4;border:1px solid #e1e6ec;border-radius:999px;padding:3px 6px}.password-rules span.ok{color:#16824e;border-color:#b6dfc8;background:#f1fbf5}.password-generate{margin-top:8px;border:0;background:transparent;color:#286fda;font-size:11px;font-weight:750;padding:0;cursor:pointer}@media(max-width:680px){.plan-grid{grid-template-columns:1fr}.location-search-card{padding:15px}}
   </style>
 
   <script type="module" is:inline>
@@ -123,24 +175,230 @@ import PublicBrand from '../components/PublicBrand.astro';
     const setMessage=(t,type='error')=>{message.hidden=!t;message.className=type==='success'?'auth-success':type==='info'?'auth-info':'auth-error';message.textContent=t||''};
     const normalizePhone=v=>/^7\d{8}$/.test(v.replace(/\D/g,''))?`256${v.replace(/\D/g,'')}`:null,validEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),strong=v=>v.length>=8&&/[A-Z]/.test(v)&&/[a-z]/.test(v)&&/\d/.test(v)&&/[^A-Za-z0-9]/.test(v),schoolCapacity=()=>Math.max(0,Math.round(Number(value('studentCapacity')||0))),selectedPlanName=()=>document.querySelector('input[name="plan"]:checked')?.value||'',planByName=name=>publicPlans.find(p=>String(p.name||'').toLowerCase()===String(name||'').toLowerCase()),money=n=>`UGX ${Math.round(Number(n||0)).toLocaleString('en-US')}`,cycleLabel=c=>String(c||'termly').toLowerCase()==='termly'?'per term':`per ${String(c||'term').replace(/ly$/,'')}`;
 
-    const ugandaPlaces=[
-      ['Booma','Mbarara','Western'],['Mbarara','Mbarara','Western'],['Kakoba','Mbarara','Western'],['Nyamitanga','Mbarara','Western'],['Kampala','Kampala','Central'],['Kololo','Kampala','Central'],['Ntinda','Kampala','Central'],['Nakawa','Kampala','Central'],['Makindye','Kampala','Central'],['Rubaga','Kampala','Central'],['Kawempe','Kampala','Central'],['Entebbe','Wakiso','Central'],['Kira','Wakiso','Central'],['Nansana','Wakiso','Central'],['Mukono','Mukono','Central'],['Masaka','Masaka','Central'],['Mpigi','Mpigi','Central'],['Mityana','Mityana','Central'],['Luwero','Luwero','Central'],['Jinja','Jinja','Eastern'],['Iganga','Iganga','Eastern'],['Mbale','Mbale','Eastern'],['Tororo','Tororo','Eastern'],['Busia','Busia','Eastern'],['Soroti','Soroti','Eastern'],['Pallisa','Pallisa','Eastern'],['Kapchorwa','Kapchorwa','Eastern'],['Gulu','Gulu','Northern'],['Lira','Lira','Northern'],['Arua','Arua','Northern'],['Kitgum','Kitgum','Northern'],['Pader','Pader','Northern'],['Adjumani','Adjumani','Northern'],['Moroto','Moroto','Northern'],['Hoima','Hoima','Western'],['Fort Portal','Kabarole','Western'],['Kasese','Kasese','Western'],['Kabale','Kabale','Western'],['Bushenyi','Bushenyi','Western'],['Ishaka','Bushenyi','Western'],['Ntungamo','Ntungamo','Western'],['Rukungiri','Rukungiri','Western'],['Ibanda','Ibanda','Western'],['Kiruhura','Kiruhura','Western'],['Lyantonde','Lyantonde','Central']
-    ].map(([name,district,region])=>({name,district,region,country:'Uganda'}));
-    const placeList=byId('ugandaPlaces');ugandaPlaces.forEach(p=>{const o=document.createElement('option');o.value=p.name;o.label=`${p.name} — ${p.district}, ${p.region}, Uganda`;placeList.appendChild(o)});
-    function resolveLocation(){const typed=value('locationSearch').toLowerCase();const match=ugandaPlaces.find(p=>p.name.toLowerCase()===typed);const box=byId('locationResult');if(!match){byId('region').value='';byId('district').value='';byId('address').value='';byId('locationName').value='';box.hidden=true;return false}byId('region').value=match.region;byId('district').value=match.district;byId('address').value=match.name;byId('locationName').value=match.name;byId('country').value='Uganda';byId('locationResultName').textContent=match.name;byId('locationResultMeta').textContent=`${match.district} District • ${match.region} Region • Uganda`;box.hidden=false;return true}byId('locationSearch').addEventListener('input',()=>{resolveLocation();saveDraft()});byId('locationSearch').addEventListener('change',resolveLocation);
+    // --- Uganda location autocomplete -------------------------------------------------
+    // Selected location state. `locationSelected` is the single source of truth for
+    // whether step 1 can advance — free text in the input alone is never valid.
+    let locationSelected = null; // { locationName, address, district, region, country, latitude, longitude, source }
+    let locationSearchToken = 0; // bumps on every new request so stale responses are ignored
+    let locationDebounceTimer = null;
+    let locationActiveResults = [];
+    let locationActiveIndex = -1;
+
+    const locationInput = byId('locationSearch');
+    const locationDropdown = byId('locationDropdown');
+    const locationListbox = byId('locationListbox');
+    const locationHint = byId('locationHint');
+    const locationResultBox = byId('locationResult');
+    const manualForm = byId('manualLocationForm');
+    const manualToggle = byId('manualLocationToggle');
+
+    function setLocationFields(loc) {
+      locationSelected = loc;
+      byId('region').value = loc?.region || '';
+      byId('district').value = loc?.district || '';
+      byId('address').value = loc?.address || '';
+      byId('locationName').value = loc?.locationName || '';
+      byId('area').value = loc?.area || loc?.locationName || '';
+      byId('town').value = loc?.town || '';
+      byId('city').value = loc?.city || '';
+      byId('country').value = 'Uganda';
+      byId('latitude').value = loc?.latitude ?? '';
+      byId('longitude').value = loc?.longitude ?? '';
+      byId('locationSource').value = loc?.source || '';
+    }
+
+    function showLocationResult(loc) {
+      byId('locationResultName').textContent = loc.locationName;
+      byId('locationResultMeta').textContent = `${loc.district} • ${loc.region} Region • Uganda`;
+      locationResultBox.hidden = false;
+      locationInput.closest('.form-field').hidden = true;
+      manualToggle.hidden = true;
+      manualForm.hidden = true;
+    }
+
+    function clearLocationSelection({ keepText = false } = {}) {
+      setLocationFields(null);
+      locationResultBox.hidden = true;
+      locationInput.closest('.form-field').hidden = false;
+      manualToggle.hidden = false;
+      if (!keepText) locationInput.value = '';
+      closeLocationDropdown();
+    }
+
+    byId('locationChangeBtn').addEventListener('click', () => { clearLocationSelection(); locationInput.focus(); saveDraft(); });
+
+    function closeLocationDropdown() {
+      locationDropdown.hidden = true;
+      locationListbox.innerHTML = '';
+      locationActiveResults = [];
+      locationActiveIndex = -1;
+      locationInput.setAttribute('aria-expanded', 'false');
+      locationInput.removeAttribute('aria-activedescendant');
+    }
+
+    function renderLocationDropdown(content) {
+      locationListbox.innerHTML = '';
+      locationDropdown.hidden = false;
+      locationInput.setAttribute('aria-expanded', 'true');
+      if (typeof content === 'string') {
+        const li = document.createElement('li');
+        li.className = content === '__loading__' ? 'location-empty' : (content.startsWith('__error__:') ? 'location-error' : 'location-empty');
+        li.textContent = content === '__loading__' ? 'Searching…' : content.replace('__error__:', '');
+        locationListbox.appendChild(li);
+        return;
+      }
+      content.forEach((loc, i) => {
+        const li = document.createElement('li');
+        li.className = 'location-option';
+        li.id = `location-option-${i}`;
+        li.setAttribute('role', 'option');
+        const name = document.createElement('div'); name.className = 'location-option-name'; name.textContent = loc.locationName;
+        const meta = document.createElement('div'); meta.className = 'location-option-meta'; meta.textContent = `${loc.district} • ${loc.region} Region • Uganda`;
+        li.appendChild(name); li.appendChild(meta);
+        li.addEventListener('mousedown', (e) => { e.preventDefault(); selectLocation(loc, 'autocomplete'); });
+        locationListbox.appendChild(li);
+      });
+      locationActiveResults = content;
+      locationActiveIndex = -1;
+    }
+
+    function selectLocation(loc, source) {
+      setLocationFields({ ...loc, source });
+      showLocationResult({ ...loc });
+      closeLocationDropdown();
+      setMessage('');
+      saveDraft();
+    }
+
+    async function runLocationSearch(query) {
+      const token = ++locationSearchToken;
+      byId('locationSpinner').hidden = false;
+      renderLocationDropdown('__loading__');
+      try {
+        const r = await fetch(`${functionsBaseUrl}/searchUgandaLocations?q=${encodeURIComponent(query)}`);
+        if (token !== locationSearchToken) return; // a newer keystroke superseded this request
+        if (!r.ok) throw new Error('search_failed');
+        const data = await r.json();
+        if (token !== locationSearchToken) return;
+        const results = Array.isArray(data.results) ? data.results : [];
+        if (!results.length) {
+          locationListbox.innerHTML = '';
+          locationDropdown.hidden = false;
+          const empty = document.createElement('li');
+          empty.className = 'location-empty';
+          empty.textContent = 'No matching Uganda locations found.';
+          const link = document.createElement('button');
+          link.type = 'button'; link.className = 'location-fallback-link'; link.textContent = "Can't find your location? Enter it manually";
+          link.addEventListener('mousedown', (e) => { e.preventDefault(); closeLocationDropdown(); openManualForm(); });
+          locationListbox.appendChild(empty); locationListbox.appendChild(link);
+          locationActiveResults = [];
+        } else {
+          renderLocationDropdown(results);
+        }
+      } catch (e) {
+        if (token !== locationSearchToken) return;
+        renderLocationDropdown('__error__:Location search is temporarily unavailable.');
+      } finally {
+        if (token === locationSearchToken) byId('locationSpinner').hidden = true;
+      }
+    }
+
+    locationInput.addEventListener('input', () => {
+      if (locationSelected) clearLocationSelection({ keepText: true });
+      const q = locationInput.value.trim();
+      clearTimeout(locationDebounceTimer);
+      if (q.length < 2) { closeLocationDropdown(); byId('locationSpinner').hidden = true; return; }
+      locationDebounceTimer = setTimeout(() => runLocationSearch(q), 350);
+    });
+
+    locationInput.addEventListener('keydown', (e) => {
+      if (locationDropdown.hidden) return;
+      const items = [...locationListbox.querySelectorAll('.location-option')];
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        locationActiveIndex = Math.min(locationActiveIndex + 1, items.length - 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        locationActiveIndex = Math.max(locationActiveIndex - 1, 0);
+      } else if (e.key === 'Enter') {
+        if (locationActiveIndex >= 0 && locationActiveResults[locationActiveIndex]) {
+          e.preventDefault();
+          selectLocation(locationActiveResults[locationActiveIndex], 'autocomplete');
+        }
+        return;
+      } else if (e.key === 'Escape') {
+        closeLocationDropdown();
+        return;
+      } else {
+        return;
+      }
+      items.forEach((el, i) => el.classList.toggle('active', i === locationActiveIndex));
+      const activeEl = items[locationActiveIndex];
+      if (activeEl) { locationInput.setAttribute('aria-activedescendant', activeEl.id); activeEl.scrollIntoView({ block: 'nearest' }); }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!byId('locationInputWrap').contains(e.target)) closeLocationDropdown();
+    });
+
+    // "Use my current location" ---------------------------------------------------------
+    byId('useCurrentLocationBtn').addEventListener('click', () => {
+      if (!('geolocation' in navigator)) { locationHint.textContent = "Current location isn't available. Search for your school location instead."; return; }
+      const btn = byId('useCurrentLocationBtn');
+      btn.setAttribute('aria-busy', 'true');
+      locationHint.textContent = 'Locating your school…';
+      navigator.geolocation.getCurrentPosition(
+        async ({ coords }) => {
+          try {
+            const r = await fetch(`${functionsBaseUrl}/reverseGeocodeUgandaLocation?lat=${coords.latitude}&lon=${coords.longitude}`);
+            const data = await r.json().catch(() => ({}));
+            if (!r.ok || !data.result) {
+              locationHint.textContent = data.message || 'We could not confirm this location is in Uganda. Search manually instead.';
+              return;
+            }
+            locationInput.value = data.result.locationName;
+            selectLocation(data.result, 'geolocation');
+            locationHint.textContent = 'Location found.';
+          } catch (e) {
+            locationHint.textContent = 'Current location isn\'t available. Search for your school location instead.';
+          } finally {
+            btn.removeAttribute('aria-busy');
+          }
+        },
+        () => {
+          btn.removeAttribute('aria-busy');
+          locationHint.textContent = "Current location isn't available. Search for your school location instead.";
+        },
+        { enableHighAccuracy: true, timeout: 10000 },
+      );
+    });
+
+    // Manual fallback ---------------------------------------------------------------------
+    function openManualForm() { manualForm.hidden = false; manualToggle.hidden = true; byId('manualArea').focus(); }
+    manualToggle.addEventListener('click', openManualForm);
+    byId('useManualLocationBtn').addEventListener('click', () => {
+      const area = value('manualArea'), district = value('manualDistrict'), region = value('manualRegion');
+      if (!area || !district || !region) { setMessage('Enter area/village, district and region to continue.'); return; }
+      const loc = { locationName: area, address: area, area, town: '', city: '', district, region, country: 'Uganda', latitude: null, longitude: null };
+      locationInput.value = area;
+      selectLocation(loc, 'manual');
+      manualForm.hidden = true;
+    });
+
+    function resolveLocation() { return !!locationSelected; }
 
     const showStep=i=>{currentStep=Math.max(0,Math.min(5,i));sections.forEach((s,n)=>s.classList.toggle('active',n===currentStep));indicators.forEach((s,n)=>{s.classList.toggle('active',n===currentStep);s.classList.toggle('done',n<currentStep);const d=s.querySelector('.step-dot');if(d)d.textContent=n<currentStep?'✓':String(n+1)});setMessage('');saveDraft();scrollTo({top:0,behavior:'smooth'})};
     function unavailable(id,label){const state=byId(id)?.dataset.available;return state==='false'?`${label} is already linked to another School Pulse application.`:state==='checking'?`Wait while we check ${label.toLowerCase()} availability.`:null}
-    function validate(i){if(i===0){if(value('schoolName').length<3||!validEmail(value('schoolEmail'))||!normalizePhone(value('schoolPhone'))||!value('schoolCategory')||value('schoolPrefix').length<2)return'Complete the required school details with valid information.';return unavailable('schoolEmail','School email')||unavailable('schoolPhone','School phone')||unavailable('schoolPrefix','School initials')}if(i===1&&!resolveLocation())return'Choose a valid Uganda location from the suggestions.';if(i===2){if(schoolCapacity()<1)return'Enter your approximate student population.';const name=selectedPlanName();if(!name)return'Choose a subscription plan.';const p=planByName(name);if(p&&Number(p.maxStudents||0)>0&&schoolCapacity()>Number(p.maxStudents))return`${name} supports up to ${Number(p.maxStudents).toLocaleString('en-US')} students. Choose a plan that supports your school size.`}if(i===3){if(value('firstName').length<2||value('lastName').length<2||!normalizePhone(value('adminPhone'))||!validEmail(value('adminEmail')))return'Complete the administrator details with valid information.';const phoneIssue=unavailable('adminPhone','Administrator phone');if(phoneIssue)return phoneIssue;if(!strong(value('password')))return'Use a strong password with 8+ characters, uppercase, lowercase, number and symbol.';if(value('password')!==value('confirmPassword'))return'Passwords do not match.'}return null}
+    function validate(i){if(i===0){if(value('schoolName').length<3||!validEmail(value('schoolEmail'))||!normalizePhone(value('schoolPhone'))||!value('schoolCategory')||value('schoolPrefix').length<2)return'Complete the required school details with valid information.';return unavailable('schoolEmail','School email')||unavailable('schoolPhone','School phone')||unavailable('schoolPrefix','School initials')}if(i===1&&!resolveLocation())return'Choose a location from the suggestions or use manual location entry.';if(i===2){if(schoolCapacity()<1)return'Enter your approximate student population.';const name=selectedPlanName();if(!name)return'Choose a subscription plan.';const p=planByName(name);if(p&&Number(p.maxStudents||0)>0&&schoolCapacity()>Number(p.maxStudents))return`${name} supports up to ${Number(p.maxStudents).toLocaleString('en-US')} students. Choose a plan that supports your school size.`}if(i===3){if(value('firstName').length<2||value('lastName').length<2||!normalizePhone(value('adminPhone'))||!validEmail(value('adminEmail')))return'Complete the administrator details with valid information.';const phoneIssue=unavailable('adminPhone','Administrator phone');if(phoneIssue)return phoneIssue;if(!strong(value('password')))return'Use a strong password with 8+ characters, uppercase, lowercase, number and symbol.';if(value('password')!==value('confirmPassword'))return'Passwords do not match.'}return null}
     document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{const e=validate(currentStep);e?setMessage(e):showStep(currentStep+1)}));document.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));
     byId('adminEmail').addEventListener('input',e=>byId('username').value=e.target.value.split('@')[0].replace(/[^a-zA-Z0-9._]/g,'').toLowerCase());byId('schoolPrefix').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''));
     document.querySelectorAll('.module-chip.selectable').forEach(b=>b.addEventListener('click',()=>{const m=b.dataset.module;if(optionalModules.has(m)){optionalModules.delete(m);b.classList.remove('included');b.setAttribute('aria-pressed','false');b.textContent=`+ ${m}`}else{optionalModules.add(m);b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`;saveDraft()}));
     function updatePlanRecommendation(){const capacity=schoolCapacity(),summary=byId('planRecommendation');document.querySelectorAll('[data-plan-card]').forEach(c=>c.classList.remove('recommended','over-capacity'));if(!capacity){summary.textContent='Enter your student population to see the recommended plan.';summary.className='hint';return}const finite=publicPlans.filter(p=>Number(p.maxStudents||0)>0).sort((a,b)=>Number(a.maxStudents)-Number(b.maxStudents));let recommended=finite.find(p=>capacity<=Number(p.maxStudents));if(!recommended)recommended=publicPlans.find(p=>p.customPricing===true)||publicPlans[publicPlans.length-1];for(const p of publicPlans){const card=document.querySelector(`[data-plan-card="${p.name}"]`);if(!card)continue;if(Number(p.maxStudents||0)>0&&capacity>Number(p.maxStudents))card.classList.add('over-capacity');if(recommended&&p.id===recommended.id)card.classList.add('recommended')}if(recommended){summary.textContent=`Recommended for about ${capacity.toLocaleString('en-US')} students: ${recommended.name}.`;summary.className='hint plan-recommendation-good'}}
     async function loadPlans(){try{const r=await fetch(`${functionsBaseUrl}/getPublicSubscriptionPlans`);if(!r.ok)throw new Error('plans unavailable');const x=await r.json();if(!Array.isArray(x.plans)||!x.plans.length)return;publicPlans=x.plans;for(const p of publicPlans){const card=document.querySelector(`[data-plan-card="${p.name}"]`);if(!card)continue;card.querySelector('.plan-price').textContent=p.customPricing||Number(p.price||0)<=0?'Custom pricing':money(p.price);card.querySelector('.plan-cycle').textContent=p.customPricing?'Talk to School Pulse':cycleLabel(p.billingCycle);card.querySelector('.plan-capacity').textContent=Number(p.maxStudents||0)>0?`Up to ${Number(p.maxStudents).toLocaleString('en-US')} students`:(p.customPricing?'For large or custom institutions':'Flexible school capacity')}updatePlanRecommendation()}catch(e){console.warn('Using registration plan fallbacks until billing endpoint is available.',e)}}
     byId('studentCapacity').addEventListener('input',()=>{updatePlanRecommendation();saveDraft()});document.querySelectorAll('input[name="plan"]').forEach(r=>r.addEventListener('change',saveDraft));
-    function payload(){return{school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:'',prefix:value('schoolPrefix'),motto:'',studentCapacity:schoolCapacity()},location:{region:value('region'),district:value('district'),address:value('address'),website:'',locationName:value('locationName'),country:'Uganda',latitude:'',longitude:''},plan:selectedPlanName(),selectedModules:selectedModules(),administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},marketingOptIn:byId('marketingOptIn').checked,termsAccepted:true}}
-    function saveDraft(){const ids=['schoolName','shortName','schoolEmail','schoolPhone','schoolCategory','schoolPrefix','studentCapacity','locationSearch','firstName','lastName','gender','adminPhone','adminEmail'];const d={step:currentStep,plan:selectedPlanName(),modules:[...optionalModules]};ids.forEach(id=>d[id]=value(id));localStorage.setItem('schoolPulseRegistrationDraft',JSON.stringify(d))}
-    try{const d=JSON.parse(localStorage.getItem('schoolPulseRegistrationDraft')||'{}');Object.entries(d).forEach(([k,v])=>{const el=byId(k);if(el&&!el.value&&typeof v==='string')el.value=v});(d.modules||[]).forEach(m=>{optionalModules.add(m);const b=document.querySelector(`[data-module="${m}"]`);if(b){b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}});if(d.plan){const r=document.querySelector(`input[name="plan"][value="${d.plan}"]`);if(r)r.checked=true}if(byId('adminEmail').value)byId('username').value=byId('adminEmail').value.split('@')[0].toLowerCase();byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`;resolveLocation()}catch{}
+    function payload(){return{school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:'',prefix:value('schoolPrefix'),motto:'',studentCapacity:schoolCapacity()},location:{region:value('region'),district:value('district'),address:value('address'),website:'',locationName:value('locationName'),area:value('area'),town:value('town'),city:value('city'),country:'Uganda',latitude:value('latitude'),longitude:value('longitude'),locationSource:value('locationSource')},plan:selectedPlanName(),selectedModules:selectedModules(),administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},marketingOptIn:byId('marketingOptIn').checked,termsAccepted:true}}
+    function saveDraft(){const ids=['schoolName','shortName','schoolEmail','schoolPhone','schoolCategory','schoolPrefix','studentCapacity','firstName','lastName','gender','adminPhone','adminEmail'];const d={step:currentStep,plan:selectedPlanName(),modules:[...optionalModules],location:locationSelected};ids.forEach(id=>d[id]=value(id));localStorage.setItem('schoolPulseRegistrationDraft',JSON.stringify(d))}
+    try{const d=JSON.parse(localStorage.getItem('schoolPulseRegistrationDraft')||'{}');Object.entries(d).forEach(([k,v])=>{const el=byId(k);if(el&&!el.value&&typeof v==='string')el.value=v});(d.modules||[]).forEach(m=>{optionalModules.add(m);const b=document.querySelector(`[data-module="${m}"]`);if(b){b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}});if(d.plan){const r=document.querySelector(`input[name="plan"][value="${d.plan}"]`);if(r)r.checked=true}if(byId('adminEmail').value)byId('username').value=byId('adminEmail').value.split('@')[0].toLowerCase();byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`;if(d.location&&d.location.locationName){locationInput.value=d.location.locationName;selectLocation(d.location,d.location.source||'autocomplete')}}catch{}
     loadPlans().then(updatePlanRecommendation);
     async function saveServerDraft(user){try{const token=await user.getIdToken(true);await fetch(`${functionsBaseUrl}/saveSchoolRegistrationDraft`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(payload())})}catch(e){console.warn('Draft persistence unavailable',e)}}
     byId('createAccountBtn').addEventListener('click',async()=>{const e=validate(3);if(e){setMessage(e);return}const btn=byId('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Creating account…';try{let user=auth.currentUser;if(!user){const c=await createUserWithEmailAndPassword(auth,value('adminEmail'),value('password'));user=c.user;await updateProfile(user,{displayName:`${value('firstName')} ${value('lastName')}`})}await saveServerDraft(user);byId('verifyEmailText').textContent=user.email;if(!user.emailVerified)await sendEmailVerification(user,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});showStep(4);setMessage('Verification email sent.','info')}catch(err){setMessage(err?.code==='auth/email-already-in-use'?'An account already exists with this email. Sign in or use another email.':(err?.message||'Could not create the account.'))}finally{btn.disabled=false;btn.textContent='Create & Verify Email →'}});

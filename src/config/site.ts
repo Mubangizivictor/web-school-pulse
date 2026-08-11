@@ -9,10 +9,6 @@ export const siteConfig = {
   whatsappNumber: '256793128137',
   email: 'mubangizivic@gmail.com',
   tagline: 'Educate • Empower • Excel',
-  payments: {
-    provider: 'Yo! Payments',
-    enabled: false,
-  },
 };
 
 export const plans = [

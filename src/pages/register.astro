@@ -57,6 +57,9 @@ import PublicBrand from '../components/PublicBrand.astro';
         <span class="hint">Your school size helps us recommend a suitable plan. Pricing is controlled from the School Pulse SaaS Admin.</span>
       </div>
       <div class="form-field full" style="margin-top:18px"><label>Subscription plan *</label>
+        <!-- Prices below are fallback text shown only until loadPlans() overwrites
+             them with live getPublicSubscriptionPlans data; not a second maintained
+             price source. -->
         <div class="plan-grid" id="planChooser">
           <label class="plan-card" data-plan-card="Starter"><input type="radio" name="plan" value="Starter" /><span class="plan-name">Starter</span><span class="plan-price">UGX 350,000</span><span class="plan-cycle">per term</span><span class="plan-capacity">Flexible school capacity</span><span class="plan-select">Choose Starter</span></label>
           <label class="plan-card" data-plan-card="Growth"><input type="radio" name="plan" value="Growth" /><span class="plan-name">Growth</span><span class="plan-price">UGX 550,000</span><span class="plan-cycle">per term</span><span class="plan-capacity">Flexible school capacity</span><span class="plan-select">Choose Growth</span></label>

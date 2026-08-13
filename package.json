@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "test": "node __tests__/register_location.test.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",

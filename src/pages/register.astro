@@ -168,7 +168,7 @@ import PublicBrand from '../components/PublicBrand.astro';
 
   <script type="module" is:inline>
     import { auth, functionsBaseUrl } from '/js/firebase-client.js';
-    import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { createUserWithEmailAndPassword, updateProfile, reload } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     let currentStep=0; const requiredModules=['Students','Attendance','Academics','Administration']; const optionalModules=new Set();let publicPlans=[];
     const sections=[...document.querySelectorAll('[data-step]')],indicators=[...document.querySelectorAll('[data-step-indicator]')],message=document.getElementById('globalMessage');const byId=id=>document.getElementById(id),value=id=>(byId(id)?.value||'').trim();const selectedModules=()=>[...requiredModules,...optionalModules];
     const setMessage=(t,type='error')=>{message.hidden=!t;message.className=type==='success'?'auth-success':type==='info'?'auth-info':'auth-error';message.textContent=t||''};
@@ -195,7 +195,7 @@ import PublicBrand from '../components/PublicBrand.astro';
       locationSelected = loc;
       byId('region').value = loc?.region || '';
       byId('district').value = loc?.district || '';
-      byId('address').value = loc?.address || '';
+      byId('address').value = loc?.address || loc?.formattedAddress || loc?.locationName || '';
       byId('locationName').value = loc?.locationName || '';
       byId('area').value = loc?.area || loc?.locationName || '';
       byId('town').value = loc?.town || '';
@@ -384,7 +384,11 @@ import PublicBrand from '../components/PublicBrand.astro';
       manualForm.hidden = true;
     });
 
-    function resolveLocation() { return !!locationSelected; }
+    function resolveLocation() {
+      if (!locationSelected) return false;
+      const resolvedAddress = locationSelected.address || locationSelected.formattedAddress || locationSelected.locationName || '';
+      return !!(locationSelected.locationName && locationSelected.district && locationSelected.region && resolvedAddress);
+    }
 
     const showStep=i=>{currentStep=Math.max(0,Math.min(5,i));sections.forEach((s,n)=>s.classList.toggle('active',n===currentStep));indicators.forEach((s,n)=>{s.classList.toggle('active',n===currentStep);s.classList.toggle('done',n<currentStep);const d=s.querySelector('.step-dot');if(d)d.textContent=n<currentStep?'✓':String(n+1)});setMessage('');saveDraft();scrollTo({top:0,behavior:'smooth'})};
     function unavailable(id,label){const state=byId(id)?.dataset.available;return state==='false'?`${label} is already linked to another School Pulse application.`:state==='checking'?`Wait while we check ${label.toLowerCase()} availability.`:null}
@@ -396,14 +400,44 @@ import PublicBrand from '../components/PublicBrand.astro';
     async function loadPlans(){try{const r=await fetch(`${functionsBaseUrl}/getPublicSubscriptionPlans`);if(!r.ok)throw new Error('plans unavailable');const x=await r.json();if(!Array.isArray(x.plans)||!x.plans.length)return;publicPlans=x.plans;for(const p of publicPlans){const card=document.querySelector(`[data-plan-card="${p.name}"]`);if(!card)continue;card.querySelector('.plan-price').textContent=p.customPricing||Number(p.price||0)<=0?'Custom pricing':money(p.price);card.querySelector('.plan-cycle').textContent=p.customPricing?'Talk to School Pulse':cycleLabel(p.billingCycle);card.querySelector('.plan-capacity').textContent=Number(p.maxStudents||0)>0?`Up to ${Number(p.maxStudents).toLocaleString('en-US')} students`:(p.customPricing?'For large or custom institutions':'Flexible school capacity')}updatePlanRecommendation()}catch(e){console.warn('Using registration plan fallbacks until billing endpoint is available.',e)}}
     byId('studentCapacity').addEventListener('input',()=>{updatePlanRecommendation();saveDraft()});document.querySelectorAll('input[name="plan"]').forEach(r=>r.addEventListener('change',saveDraft));
     function requiresCapacityReview(){const capacity=schoolCapacity();const finite=publicPlans.filter(p=>Number(p.maxStudents||0)>0);if(!capacity||!finite.length)return false;const largest=Math.max(...finite.map(p=>Number(p.maxStudents)));return capacity>largest}
-    function payload(){return{school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:'',prefix:value('schoolPrefix'),motto:'',studentCapacity:schoolCapacity()},location:{region:value('region'),district:value('district'),address:value('address'),website:'',locationName:value('locationName'),area:value('area'),town:value('town'),city:value('city'),country:'Uganda',latitude:value('latitude'),longitude:value('longitude'),locationSource:value('locationSource')},plan:selectedPlanName(),requiresCapacityReview:requiresCapacityReview(),selectedModules:selectedModules(),administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},marketingOptIn:byId('marketingOptIn').checked,termsAccepted:true}}
+    function resolvedLocationAddress(){return value('address')||locationSelected?.address||locationSelected?.formattedAddress||locationSelected?.locationName||''}
+    function payload(){return{school:{name:value('schoolName'),shortName:value('shortName'),email:value('schoolEmail'),phone:normalizePhone(value('schoolPhone')),category:value('schoolCategory'),poBox:'',prefix:value('schoolPrefix'),motto:'',studentCapacity:schoolCapacity()},location:{region:value('region'),district:value('district'),address:resolvedLocationAddress(),website:'',locationName:value('locationName'),area:value('area'),town:value('town'),city:value('city'),country:'Uganda',latitude:value('latitude'),longitude:value('longitude'),locationSource:value('locationSource')},plan:selectedPlanName(),requiresCapacityReview:requiresCapacityReview(),selectedModules:selectedModules(),administrator:{firstName:value('firstName'),lastName:value('lastName'),gender:value('gender'),phone:normalizePhone(value('adminPhone')),email:value('adminEmail'),username:value('username')},marketingOptIn:byId('marketingOptIn').checked,termsAccepted:true}}
     function saveDraft(){const ids=['schoolName','shortName','schoolEmail','schoolPhone','schoolCategory','schoolPrefix','studentCapacity','firstName','lastName','gender','adminPhone','adminEmail'];const d={step:currentStep,plan:selectedPlanName(),modules:[...optionalModules],location:locationSelected};ids.forEach(id=>d[id]=value(id));localStorage.setItem('schoolPulseRegistrationDraft',JSON.stringify(d))}
     try{const d=JSON.parse(localStorage.getItem('schoolPulseRegistrationDraft')||'{}');Object.entries(d).forEach(([k,v])=>{const el=byId(k);if(el&&!el.value&&typeof v==='string')el.value=v});(d.modules||[]).forEach(m=>{optionalModules.add(m);const b=document.querySelector(`[data-module="${m}"]`);if(b){b.classList.add('included');b.setAttribute('aria-pressed','true');b.textContent=`✓ ${m}`}});if(d.plan){const r=document.querySelector(`input[name="plan"][value="${d.plan}"]`);if(r)r.checked=true}if(byId('adminEmail').value)byId('username').value=byId('adminEmail').value.split('@')[0].toLowerCase();byId('moduleSummary').textContent=`${selectedModules().length} modules selected.`;if(d.location&&d.location.locationName){locationInput.value=d.location.locationName;selectLocation(d.location,d.location.source||'autocomplete')}}catch{}
     loadPlans().then(updatePlanRecommendation);
     async function saveServerDraft(user){try{const token=await user.getIdToken(true);await fetch(`${functionsBaseUrl}/saveSchoolRegistrationDraft`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(payload())})}catch(e){console.warn('Draft persistence unavailable',e)}}
-    byId('createAccountBtn').addEventListener('click',async()=>{const e=validate(3);if(e){setMessage(e);return}const btn=byId('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Creating account…';try{let user=auth.currentUser;if(!user){const c=await createUserWithEmailAndPassword(auth,value('adminEmail'),value('password'));user=c.user;await updateProfile(user,{displayName:`${value('firstName')} ${value('lastName')}`})}await saveServerDraft(user);byId('verifyEmailText').textContent=user.email;if(!user.emailVerified)await sendEmailVerification(user,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});showStep(4);setMessage('Verification email sent.','info')}catch(err){setMessage(err?.code==='auth/email-already-in-use'?'An account already exists with this email. Sign in or use another email.':(err?.message||'Could not create the account.'))}finally{btn.disabled=false;btn.textContent='Create & Verify Email →'}});
+    // Delivery goes through the School Pulse Resend pipeline, not Firebase's
+    // own default email - Firebase still generates/validates the actual
+    // verification link server-side (see public_functions/email_verification.js).
+    // Never call the Firebase client SDK's sendEmailVerification() here.
+    async function requestVerificationEmail(user){
+      const token=await user.getIdToken(true);
+      const r=await fetch(`${functionsBaseUrl}/requestEmailVerification`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({schoolName:value('schoolName')})});
+      const x=await r.json().catch(()=>({}));
+      if(r.status===429)throw Object.assign(new Error('You’ve requested a few verification emails already. Please wait a bit before trying again.'),{code:'rate_limited'});
+      if(!r.ok)throw new Error(x.message||'Could not send the verification email. Please try again.');
+      return x;
+    }
+    byId('createAccountBtn').addEventListener('click',async()=>{const e=validate(3);if(e){setMessage(e);return}const btn=byId('createAccountBtn');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Creating account…';try{let user=auth.currentUser;if(!user){const c=await createUserWithEmailAndPassword(auth,value('adminEmail'),value('password'));user=c.user;await updateProfile(user,{displayName:`${value('firstName')} ${value('lastName')}`})}await saveServerDraft(user);byId('verifyEmailText').textContent=user.email;if(!user.emailVerified)await requestVerificationEmail(user);showStep(4);setMessage('Verification email sent.','info')}catch(err){setMessage(err?.code==='auth/email-already-in-use'?'An account already exists with this email. Sign in or use another email.':(err?.message||'Could not create the account.'))}finally{btn.disabled=false;btn.textContent='Create & Verify Email →'}});
     async function checkVerification(){const user=auth.currentUser;if(!user){setMessage('Sign in again to continue this registration.','info');return false}await reload(user);if(user.emailVerified){byId('continueAfterVerify').disabled=false;byId('verifyState').textContent='Email verified successfully. Continue to the Terms & Conditions step.';await saveServerDraft(user);setMessage('Email verified successfully.','success');return true}setMessage('Email is not verified yet. Open the verification email and click Verify Email.','info');return false}
-    byId('checkVerification').addEventListener('click',checkVerification);byId('resendVerification').addEventListener('click',async()=>{try{await sendEmailVerification(auth.currentUser,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false});setMessage('Verification email sent again.','success')}catch(e){setMessage(e?.message||'Could not resend verification email.')}});byId('continueAfterVerify').addEventListener('click',async()=>{if(await checkVerification())showStep(5)});
+    byId('checkVerification').addEventListener('click',checkVerification);
+    let resendInFlight=false;
+    byId('resendVerification').addEventListener('click',async()=>{
+      if(resendInFlight)return;
+      const btn=byId('resendVerification');resendInFlight=true;const originalText=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="loading"></span> Sending…';
+      try{
+        const result=await requestVerificationEmail(auth.currentUser);
+        setMessage(result.alreadyVerified?'Your email is already verified. Continue below.':'Verification email sent again. Check your inbox.','success');
+        if(result.alreadyVerified)checkVerification();
+      }catch(e){setMessage(e?.message||'Could not resend verification email.')}
+      finally{
+        btn.disabled=false;btn.textContent=originalText;resendInFlight=false;
+        // Client-side cooldown is UX only (prevents rapid double-taps) - the
+        // real limit (3/hour/uid) is enforced server-side in requestEmailVerification.
+        btn.disabled=true;setTimeout(()=>{btn.disabled=false},20000);
+      }
+    });
+    byId('continueAfterVerify').addEventListener('click',async()=>{if(await checkVerification())showStep(5)});
     byId('submitApplication').addEventListener('click',async()=>{if(!byId('acceptTerms').checked){setMessage('Accept the Terms of Service and Privacy Policy to continue.');return}if(!(await checkVerification())){showStep(4);return}const btn=byId('submitApplication');btn.disabled=true;btn.innerHTML='<span class="loading"></span> Submitting…';try{const token=await auth.currentUser.getIdToken(true),body=payload();body.termsAccepted=true;const r=await fetch(`${functionsBaseUrl}/submitSchoolApplication`,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify(body)});const x=await r.json().catch(()=>({}));if(!r.ok)throw new Error(x.message||x.error||'Application submission failed.');localStorage.removeItem('schoolPulseRegistrationDraft');location.href=`/application-status?status=pending&school=${encodeURIComponent(value('schoolName'))}`}catch(e){setMessage(e?.message||'Could not submit application.');btn.disabled=false;btn.textContent='✓ Submit Application'}});
     const params=new URLSearchParams(location.search);if(params.get('verified')==='1'){showStep(4);setTimeout(async()=>{if(await checkVerification())setTimeout(()=>showStep(5),900)},500)}
   </script>

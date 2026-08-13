@@ -20,12 +20,18 @@ import BrandLogo from '../components/BrandLogo.astro';
   </div>
   <script type="module" is:inline>
     import { auth, functionsBaseUrl, appUrl } from '/js/firebase-client.js';
-    import { signInWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
     const msg=document.getElementById('loginMessage'); const button=document.getElementById('loginButton');
     const query=new URLSearchParams(location.search); const requestedNext=query.get('next');
     const setMessage=(text,type='error')=>{msg.hidden=!text;msg.className=type==='success'?'auth-success':type==='info'?'auth-info':'auth-error';msg.textContent=text||''};
     document.getElementById('togglePassword').addEventListener('click',()=>{const el=document.getElementById('loginPassword');el.type=el.type==='password'?'text':'password'});
-    document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();setMessage('');button.disabled=true;button.innerHTML='<span class="loading"></span> Signing in…';try{const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const cred=await signInWithEmailAndPassword(auth,email,password),user=cred.user;if(!user.emailVerified){await sendEmailVerification(user,{url:'https://schoolpulse.victorbee.com/register?verified=1',handleCodeInApp:false}).catch(()=>{});setMessage('Your email is not verified yet. We sent another verification email.','info');button.disabled=false;button.textContent='→ Sign In';return}
+    // Delivery goes through the School Pulse Resend pipeline, not Firebase's
+    // own default email - mirrors register.astro's requestVerificationEmail.
+    async function requestVerificationEmail(user){
+      const token=await user.getIdToken(true);
+      await fetch(`${functionsBaseUrl}/requestEmailVerification`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:'{}'});
+    }
+    document.getElementById('loginForm').addEventListener('submit',async e=>{e.preventDefault();setMessage('');button.disabled=true;button.innerHTML='<span class="loading"></span> Signing in…';try{const email=document.getElementById('loginEmail').value.trim(),password=document.getElementById('loginPassword').value;const cred=await signInWithEmailAndPassword(auth,email,password),user=cred.user;if(!user.emailVerified){await requestVerificationEmail(user).catch(()=>{});setMessage('Your email is not verified yet. We sent another verification email.','info');button.disabled=false;button.textContent='→ Sign In';return}
       // A renewal link from the Flutter app may intentionally ask to return
       // to the payment portal. The payment backend still verifies that the
       // signed-in account is an authorized School Administrator.

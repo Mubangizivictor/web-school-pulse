@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { Sidebar } from '@/components/admin/sidebar'
+import { SplashScreen } from '@/components/admin/splash-screen'
 
 export default function ShellLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -13,13 +14,7 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
     if (!loading && !user) router.push('/login')
   }, [user, loading, router])
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-navy-900 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-amber-brand border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
+  if (loading) return <SplashScreen />
 
   if (!user) return null
 

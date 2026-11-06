@@ -1,4 +1,5 @@
-import iconLightUrl from '../../icon_light_Mode.png?url';
+import icon192Url from '../assets/brand/icon-192.png?url';
+import icon512Url from '../assets/brand/icon-512.png?url';
 
 export const prerender = true;
 
@@ -13,12 +14,8 @@ export function GET() {
     background_color: '#05080d',
     theme_color: '#05080d',
     icons: [
-      {
-        src: iconLightUrl,
-        sizes: 'any',
-        type: 'image/png',
-        purpose: 'any maskable',
-      },
+      { src: icon192Url, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: icon512Url, sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
     ],
   }), {
     headers: { 'Content-Type': 'application/manifest+json' },

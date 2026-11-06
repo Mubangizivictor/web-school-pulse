@@ -2,11 +2,11 @@
 import '../styles/auth.css';
 import '../styles/branding.css';
 import PublicBrand from '../components/PublicBrand.astro';
-import faviconUrl from '../../favicon.png?url';
-import iconLightUrl from '../../icon_light_Mode.png?url';
-import logoLightUrl from '../../logo_for_light_mode.png?url';
-import splashLightUrl from '../../splash_light_mode.png?url';
-import loadingIconUrl from '../../loading_icon.png?url';
+import PulseMark from '../components/PulseMark.astro';
+import faviconUrl from '../assets/brand/favicon-48.png?url';
+import appleTouchIconUrl from '../assets/brand/apple-touch-icon.png?url';
+import logoLightUrl from '../assets/brand/logo_horizontal_light.png?url';
+import wordmarkLightUrl from '../assets/brand/wordmark_light.png?url';
 
 const { title = 'School Pulse', asideTitle = 'Everything your school needs, in one place.', asideCopy = 'School Pulse connects every part of school administration — from enrolment to graduation — into one practical platform.' } = Astro.props;
 ---
@@ -18,13 +18,16 @@ const { title = 'School Pulse', asideTitle = 'Everything your school needs, in o
   <meta name="robots" content="noindex" />
   <meta name="theme-color" content="#ffffff" />
   <link rel="icon" type="image/png" href={faviconUrl} />
-  <link rel="apple-touch-icon" href={iconLightUrl} />
+  <link rel="apple-touch-icon" href={appleTouchIconUrl} />
   <link rel="manifest" href="/manifest.webmanifest" />
   <title>{title}</title>
 </head>
-<body style={`--sp-loading-icon:url("${loadingIconUrl}");--sp-auth-logo:url("${logoLightUrl}")`}>
+<body style={`--sp-auth-logo:url("${logoLightUrl}")`}>
   <div class="brand-splash brand-splash-light" id="authBrandSplash" aria-hidden="true">
-    <img src={splashLightUrl} alt="" decoding="async" />
+    <div class="brand-splash-stack">
+      <PulseMark tone="light" size="min(220px,48vw)" />
+      <img class="brand-splash-wordmark" src={wordmarkLightUrl} alt="" decoding="async" />
+    </div>
   </div>
   <div class="auth-shell">
     <aside class="auth-aside">

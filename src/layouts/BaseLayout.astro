@@ -3,9 +3,11 @@ import '../styles/global.css';
 import '../styles/branding.css';
 import { siteConfig } from '../config/site';
 import BrandLogo from '../components/BrandLogo.astro';
-import faviconUrl from '../../favicon.png?url';
-import iconDarkUrl from '../../icon_dark_mode.png?url';
-import splashDarkUrl from '../../splash_dark_mode.png?url';
+import faviconUrl from '../assets/brand/favicon-48.png?url';
+import appleTouchIconUrl from '../assets/brand/apple-touch-icon.png?url';
+import wordmarkDarkUrl from '../assets/brand/wordmark_dark.png?url';
+import PulseMark from '../components/PulseMark.astro';
+import iconDarkUrl from '../assets/brand/logo_mark_dark.png?url';
 
 const { title = 'School Pulse', description = 'Run your entire school from one secure platform built for modern African schools.' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
@@ -19,7 +21,7 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
   <meta name="theme-color" content="#05080d" />
   <link rel="canonical" href={canonical} />
   <link rel="icon" type="image/png" href={faviconUrl} />
-  <link rel="apple-touch-icon" href={iconDarkUrl} />
+  <link rel="apple-touch-icon" href={appleTouchIconUrl} />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
@@ -30,7 +32,10 @@ const canonical = new URL(Astro.url.pathname, siteConfig.websiteUrl);
 </head>
 <body style={`--sp-icon-dark:url("${iconDarkUrl}")`}>
   <div class="brand-splash brand-splash-dark" id="brandSplash" aria-hidden="true">
-    <img src={splashDarkUrl} alt="" decoding="async" />
+    <div class="brand-splash-stack">
+      <PulseMark tone="dark" size="min(220px,48vw)" />
+      <img class="brand-splash-wordmark" src={wordmarkDarkUrl} alt="" decoding="async" />
+    </div>
   </div>
 
   <header class="nav">

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="354 420 545 410">
+  <!-- Monochrome animated pulse mark used as a CSS mask by .loading inside
+       buttons, so the loader takes the button's text colour. Same geometry
+       and timing as src/components/PulseMark.astro. -->
+  <style>
+    .l{fill:none;stroke:#000;stroke-width:50;stroke-linecap:round;stroke-linejoin:round}
+    .t{opacity:.3}
+    .r{stroke-dasharray:412 1600;stroke-dashoffset:440;animation:r .96s linear infinite}
+    .d{transform-box:fill-box;transform-origin:center;animation:d .96s linear infinite}
+    @keyframes r{from{stroke-dashoffset:440}to{stroke-dashoffset:-1030}}
+    @keyframes d{0%,50%,100%{transform:scale(1)}25%{transform:scale(1.2)}}
+    @media (prefers-reduced-motion:reduce){.r{display:none}.t{opacity:1}.d{animation:none}}
+  </style>
+  <polyline class="l t" points="389,744.5 483.5,744.5 519,798.5 626,563.5 733,744.5 864,744.5"/>
+  <polyline class="l r" pathLength="1000" points="389,744.5 483.5,744.5 519,798.5 626,563.5 733,744.5 864,744.5"/>
+  <circle class="d" cx="626.5" cy="474.5" r="40.5"/>
+</svg>

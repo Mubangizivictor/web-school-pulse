@@ -2,8 +2,8 @@
 import '../styles/auth.css';
 import '../styles/branding.css';
 import PublicBrand from '../components/PublicBrand.astro';
-import faviconUrl from '../../favicon.png?url';
-import iconLightUrl from '../../icon_light_Mode.png?url';
+import faviconUrl from '../assets/brand/favicon-48.png?url';
+import appleTouchIconUrl from '../assets/brand/apple-touch-icon.png?url';
 ---
 <!doctype html>
 <html lang="en">
@@ -13,7 +13,7 @@ import iconLightUrl from '../../icon_light_Mode.png?url';
   <meta name="robots" content="noindex"/>
   <meta name="theme-color" content="#eef3f9"/>
   <link rel="icon" type="image/png" href={faviconUrl}/>
-  <link rel="apple-touch-icon" href={iconLightUrl}/>
+  <link rel="apple-touch-icon" href={appleTouchIconUrl}/>
   <link rel="manifest" href="/manifest.webmanifest"/>
   <title>Application Status — School Pulse</title>
 </head>

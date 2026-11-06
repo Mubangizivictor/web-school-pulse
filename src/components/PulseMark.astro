@@ -1,0 +1,35 @@
+---
+/**
+ * The School Pulse mark (pulse line + gold dot) as an animated inline SVG.
+ * It plays the brand loading animation (src/assets/brand/loading_*.gif):
+ * the line fades to a faint track, a pulse travels along it and the dot
+ * swells. Geometry and timing are shared with the app's
+ * lib/design_system/brand/animated_pulse_mark.dart and web/index.html in
+ * the school_pulse repo - change them together.
+ */
+interface Props {
+  /** `light` = blue line for light backgrounds, `dark` = white line. */
+  tone?: 'light' | 'dark';
+  /** Rendered width (any CSS length). Height follows the mark's ratio. */
+  size?: string;
+  class?: string;
+  /** Accessible label; omit for a decorative mark. */
+  label?: string;
+}
+
+const { tone = 'light', size = '96px', class: className = '', label } = Astro.props;
+const points = '389,744.5 483.5,744.5 519,798.5 626,563.5 733,744.5 864,744.5';
+---
+<svg
+  class:list={['sp-pulse-mark', `sp-pulse-mark-${tone}`, className]}
+  style={`--sp-pulse-size:${size}`}
+  viewBox="354 420 545 410"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  <polyline class="sp-pulse-line sp-pulse-track" points={points} />
+  <polyline class="sp-pulse-line sp-pulse-run" pathLength="1000" points={points} />
+  <circle class="sp-pulse-dot" cx="626.5" cy="474.5" r="40.5" />
+</svg>
